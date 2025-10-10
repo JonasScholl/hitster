@@ -25,7 +25,7 @@
   )
 )
 
-#set text(font: "New Computer Modern")
+#set text(font: ("SF Pro Display", "sans-serif"))
 
 #set square(
   stroke: none
@@ -55,30 +55,20 @@
           text(
             //for no-wrap of artist names
             song.artists.map(artist => box(artist)).join([, ]),
-            size: 0.06 * card_size
+            weight: 500,
+            size: 0.07 * card_size
           )
         ),
       ),
       block(
-        height: 0.1 * card_size,
-        width: 100%,
-        align(
-          center + horizon,
-          text(
-            [#song.day #song.month],
-            size: 0.06 * card_size
-          )
-        ),
-      ),
-      block(
-        height: 0.2 * card_size,
+        height: 0.3 * card_size,
         width: 100%,
         align(
           center + horizon,
           text(
             weight: "black",
             song.year,
-            size: 0.28 * card_size
+            size: 0.25 * card_size
           )
         ),
       ),
@@ -89,7 +79,8 @@
           center + horizon,
           text(
             [_ #song.name _],
-            size: 0.06 * card_size
+            weight: 500,
+            size: 0.07 * card_size
           )
         )
       )

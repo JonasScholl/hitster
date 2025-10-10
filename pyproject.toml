@@ -4,6 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["fjlein <fjlein@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -12,6 +13,9 @@ spotipy = "^2.25.1"
 qrcode = "^8.0"
 pillow = "^11.1.0"
 matplotlib = "^3.10.1"
+pyjwt = "^2.8.0"
+cryptography = "^41.0.0"
+requests = "^2.31.0"
 
 
 [build-system]
