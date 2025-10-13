@@ -9,3 +9,5 @@
 
 qr_codes
 __pycache__
+
+!package.json

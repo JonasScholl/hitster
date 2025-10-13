@@ -37,8 +37,10 @@ pnpm dev
 ```
 
 This will:
-- Start TailwindCSS in watch mode
+- Start TailwindCSS in watch mode (creates `dist/output.css` locally)
 - Launch a live-reload server on http://localhost:3000
+
+**Note:** The `dist/` folder is created locally for development but excluded from Git.
 
 ### Production Build
 
@@ -76,8 +78,10 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
 The GitHub Actions workflow (`.github/workflows/deploy.yml`) will:
 - ✅ Install Node.js and pnpm
 - ✅ Install dependencies
-- ✅ Build TailwindCSS
+- ✅ Build TailwindCSS (creates `dist/output.css`)
 - ✅ Deploy to GitHub Pages
+
+**Note:** The `dist/` folder is excluded from Git (via `.gitignore`) since GitHub Actions builds it automatically on each deployment.
 
 ### Manual Deployment:
 

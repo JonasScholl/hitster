@@ -1,0 +1,25 @@
+{
+    "name": "hitster-webapp",
+    "version": "1.0.0",
+    "description": "Hitster QR Scanner Web App",
+    "main": "index.html",
+    "scripts": {
+        "dev": "concurrently \"pnpm build:css:watch\" \"pnpm serve\"",
+        "build": "pnpm build:css",
+        "build:css": "tailwindcss -i ./styles.css -o ./dist/output.css --minify",
+        "build:css:watch": "tailwindcss -i ./styles.css -o ./dist/output.css --watch",
+        "serve": "live-server --port=3000 --open=/ --ignore=node_modules,src"
+    },
+    "keywords": [
+        "qr-scanner",
+        "audio-player",
+        "tailwindcss"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "tailwindcss": "^3.4.0",
+        "live-server": "^1.2.2",
+        "concurrently": "^8.2.2"
+    }
+}
