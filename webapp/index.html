@@ -90,16 +90,22 @@
 
                 <!-- Audio Player Card -->
                 <div class="audio-controls rounded-2xl p-8 shadow-2xl">
-                    <div class="text-center mb-8">
-                        <div class="w-32 h-32 bg-gray-800 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <!-- Play/Pause Button -->
+                    <div class="flex justify-center mb-10">
+                        <button id="play-pause-btn"
+                            class="bg-white text-gray-900 w-24 h-24 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition duration-300">
+                            <svg id="play-icon" class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"
+                                style="margin-left: 2px;">
                                 <path fill-rule="evenodd"
-                                    d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.793l-4-3A1 1 0 014 13V7a1 1 0 01.383-.793l4-3zM14 7a1 1 0 011-1 4 4 0 110 8 1 1 0 01-1-1V7z"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-2">Audio Preview</h3>
-                        <p class="text-gray-200 text-sm">iTunes Preview</p>
+                            <svg id="pause-icon" class="w-12 h-12 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
                     </div>
 
                     <!-- Audio Element -->
@@ -107,23 +113,6 @@
 
                     <!-- Controls -->
                     <div class="space-y-6">
-                        <!-- Play/Pause Button -->
-                        <div class="text-center">
-                            <button id="play-pause-btn"
-                                class="bg-white text-gray-900 w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition duration-300">
-                                <svg id="play-icon" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                <svg id="pause-icon" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                            </button>
-                        </div>
-
                         <!-- Progress Bar -->
                         <div class="space-y-2">
                             <div class="flex justify-between text-sm text-gray-200">
@@ -276,15 +265,33 @@
                 onScanSuccess(decodedText) {
                     console.log('QR Code scanned:', decodedText);
 
+                    // Basic URL validation first
+                    let isValidUrl = false;
+                    try {
+                        new URL(decodedText);
+                        isValidUrl = true;
+                    } catch {
+                        // Not a valid URL
+                    }
+
+                    if (!isValidUrl) {
+                        this.qrResults.innerHTML = `<p class="text-yellow-400">Scanned: ${decodedText}</p><p class="text-gray-400">This doesn't appear to be a valid URL.</p>`;
+                        return;
+                    }
+
                     // Check if it's an iTunes audio preview URL
                     if (decodedText.includes('itunes-assets/AudioPreview') ||
                         decodedText.includes('.aac.p.m4a') ||
                         decodedText.includes('audio-ssl.itunes.apple.com')) {
 
-                        this.qrResults.innerHTML = '<p class="text-green-400">Audio URL detected! Loading player...</p>';
+                        this.qrResults.innerHTML = '<p class="text-green-400">iTunes audio URL detected! Validating...</p>';
+                        this.loadAudio(decodedText);
+                    } else if (decodedText.includes('http')) {
+                        // It's a URL but not iTunes - try to validate it as audio anyway
+                        this.qrResults.innerHTML = '<p class="text-yellow-400">URL detected. Checking if it\'s an audio file...</p>';
                         this.loadAudio(decodedText);
                     } else {
-                        this.qrResults.innerHTML = `<p class="text-yellow-400">Scanned: ${decodedText}</p><p class="text-gray-400">This doesn't appear to be an iTunes audio preview URL.</p>`;
+                        this.qrResults.innerHTML = `<p class="text-yellow-400">Scanned: ${decodedText}</p><p class="text-gray-400">This doesn't appear to be an audio URL.</p>`;
                     }
                 }
 
@@ -293,18 +300,80 @@
                         // Stop scanner first
                         await this.stopScanner();
 
+                        // Show loading state
+                        this.qrResults.innerHTML = '<p class="text-blue-400">Validating audio URL...</p>';
+
+                        // Validate the audio URL by trying to load it
+                        const isValidAudio = await this.validateAudioUrl(url);
+
+                        if (!isValidAudio) {
+                            this.qrResults.innerHTML = '<p class="text-red-400">Invalid or inaccessible audio URL. Please try a different QR code.</p>';
+                            // Restart scanner after a delay
+                            setTimeout(() => {
+                                this.qrResults.innerHTML = '';
+                            }, 3000);
+                            return;
+                        }
+
                         // Set audio source
                         this.currentAudioUrl = url;
                         this.audio.src = url;
                         this.audio.volume = this.volumeSlider.value / 100;
 
-                        // Show player page
+                        // Show player page only after validation
                         this.showPlayerPage();
 
                     } catch (err) {
                         console.error('Error loading audio:', err);
-                        this.qrResults.innerHTML = '<p class="text-red-400">Error loading audio file</p>';
+                        this.qrResults.innerHTML = '<p class="text-red-400">Error loading audio file. Please try again.</p>';
+                        // Clear error message after delay
+                        setTimeout(() => {
+                            this.qrResults.innerHTML = '';
+                        }, 3000);
                     }
+                }
+
+                async validateAudioUrl(url) {
+                    return new Promise((resolve) => {
+                        const testAudio = new Audio();
+                        let resolved = false;
+
+                        // Set a timeout to avoid hanging
+                        const timeout = setTimeout(() => {
+                            if (!resolved) {
+                                resolved = true;
+                                resolve(false);
+                            }
+                        }, 5000); // 5 second timeout
+
+                        testAudio.addEventListener('canplay', () => {
+                            if (!resolved) {
+                                resolved = true;
+                                clearTimeout(timeout);
+                                resolve(true);
+                            }
+                        });
+
+                        testAudio.addEventListener('error', () => {
+                            if (!resolved) {
+                                resolved = true;
+                                clearTimeout(timeout);
+                                resolve(false);
+                            }
+                        });
+
+                        testAudio.addEventListener('loadeddata', () => {
+                            if (!resolved) {
+                                resolved = true;
+                                clearTimeout(timeout);
+                                resolve(true);
+                            }
+                        });
+
+                        // Try to load the audio
+                        testAudio.src = url;
+                        testAudio.load();
+                    });
                 }
 
                 showPlayerPage() {
@@ -359,6 +428,14 @@
                         return;
                     }
 
+                    // Basic URL validation
+                    try {
+                        new URL(url);
+                    } catch {
+                        this.qrResults.innerHTML = '<p class="text-red-400">Please enter a valid URL</p>';
+                        return;
+                    }
+
                     // Check if it's a valid iTunes audio preview URL
                     if (url.includes('itunes-assets/AudioPreview') ||
                         url.includes('.aac.p.m4a') ||
@@ -367,11 +444,9 @@
                         this.qrResults.innerHTML = '<p class="text-green-400">Loading audio from URL...</p>';
                         this.loadAudio(url);
                     } else {
-                        this.qrResults.innerHTML = '<p class="text-yellow-400">This doesn\'t appear to be an iTunes audio preview URL. Trying anyway...</p>';
-                        // Try to load it anyway
-                        setTimeout(() => {
-                            this.loadAudio(url);
-                        }, 1000);
+                        this.qrResults.innerHTML = '<p class="text-yellow-400">This doesn\'t appear to be an iTunes audio preview URL. Validating...</p>';
+                        // Try to load it anyway with validation
+                        this.loadAudio(url);
                     }
                 }
 
