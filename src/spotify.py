@@ -31,6 +31,13 @@ class SpotifyConnector(Connector):
                         )
                         continue
 
+                    if not track["preview_url"]:
+                        logging.warning(
+                            "Skipping song %s because it has no preview URL",
+                            track["name"],
+                        )
+                        continue
+
                     songs.append(
                         {
                             "name": track["name"],

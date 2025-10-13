@@ -51,6 +51,13 @@ class AppleMusicConnector(Connector):
                             else None
                         )
 
+                        if not preview_url:
+                            logging.warning(
+                                "Skipping song %s because it has no preview URL",
+                                track.get("name", "Unknown"),
+                            )
+                            continue
+
                         songs.append(
                             {
                                 "name": track.get("name", ""),
