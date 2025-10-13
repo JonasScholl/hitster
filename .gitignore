@@ -5,5 +5,7 @@
 
 *.pdf
 *.json
+*.p8
 
 qr_codes
+__pycache__

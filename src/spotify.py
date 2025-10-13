@@ -9,11 +9,11 @@ from utils import get_env_var
 class SpotifyConnector(Connector):
     def __init__(self):
         self.client = spotipy.Spotify(
-        auth_manager=spotipy.SpotifyClientCredentials(
-            client_id=get_env_var("CLIENT_ID"),
-            client_secret=get_env_var("CLIENT_SECRET"),
+            auth_manager=spotipy.SpotifyClientCredentials(
+                client_id=get_env_var("CLIENT_ID"),
+                client_secret=get_env_var("CLIENT_SECRET"),
+            )
         )
-    )
 
     def get_playlist_songs(self, playlist_id):
         songs = []
@@ -25,7 +25,10 @@ class SpotifyConnector(Connector):
                 if track:
                     year = self._resolve_year(track["album"]["release_date"])
                     if int(year) <= 0:
-                        logging.warning("Skipping song %s because it has no release year", track['name'])
+                        logging.warning(
+                            "Skipping song %s because it has no release year",
+                            track["name"],
+                        )
                         continue
 
                     songs.append(

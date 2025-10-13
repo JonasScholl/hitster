@@ -55,7 +55,7 @@ def resolve_connector() -> Connector:
     if provider == "spotify":
         logging.info("Using Spotify connector")
         return SpotifyConnector()
-    elif provider == "apple_music":
+    elif provider == "apple-music":
         logging.info("Using Apple Music connector")
         return AppleMusicConnector()
     else:
