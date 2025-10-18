@@ -12,11 +12,12 @@ class AppleMusicConnector(Connector):
     """Apple Music API connector"""
 
     _BASE_URL = "https://api.music.apple.com"
-    _TEAM_ID = get_mandatory_env_var("APPLE_TEAM_ID")
-    _KEY_ID = get_mandatory_env_var("APPLE_KEY_ID")
-    _PRIVATE_KEY_PATH = get_mandatory_env_var("APPLE_PRIVATE_KEY_PATH")
 
     def __init__(self):
+        self._TEAM_ID = get_mandatory_env_var("APPLE_TEAM_ID")
+        self._KEY_ID = get_mandatory_env_var("APPLE_KEY_ID")
+        self._PRIVATE_KEY_PATH = get_mandatory_env_var("APPLE_PRIVATE_KEY_PATH")
+
         self._token = self._generate_token()
 
     def get_playlist_songs(self, playlist_id: str) -> list[Song]:

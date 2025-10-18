@@ -13,12 +13,12 @@ from generator.generate import (
 from generator.logger import header, section, step, success
 from generator.utils import get_mandatory_env_var
 
-random.seed("hitster")
-load_dotenv()
-
 
 def main() -> None:
     """Main function to generate the cards and overview PDF"""
+
+    random.seed("hitster")
+    load_dotenv()
 
     header("🎵 Hitster Card Generator")
 

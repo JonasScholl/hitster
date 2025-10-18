@@ -88,7 +88,7 @@ poetry install
 ### Generate Cards
 
 ```bash
-poetry run python -m generator.main
+poetry run generate-hitster-cards
 ```
 
 If you are using Visual Studio Code, you can also run the `Generate Hitster Cards` launch config.

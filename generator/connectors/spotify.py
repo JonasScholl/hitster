@@ -10,9 +10,10 @@ from generator.utils import get_mandatory_env_var
 class SpotifyConnector(Connector):
     """Spotify API connector"""
 
-    _USE_PREVIEW_URL = os.getenv("SPOTIFY_USE_PREVIEW_URL", "false").lower() == "true"
-
     def __init__(self):
+        self._USE_PREVIEW_URL = (
+            os.getenv("SPOTIFY_USE_PREVIEW_URL", "false").lower() == "true"
+        )
         self._client = spotipy.Spotify(
             auth_manager=spotipy.SpotifyClientCredentials(
                 client_id=get_mandatory_env_var("SPOTIFY_CLIENT_ID"),
