@@ -1,8 +1,8 @@
 # 🎵 Hitster Card Generator
 
-> Create your own printable [Hitster](https://hitstergame.com) cards from Spotify or Apple Music playlists
+**Create your own printable [Hitster](https://hitstergame.com) cards from Spotify or Apple Music playlists!**
 
-A modern DIY solution that generates professional-quality Hitster cards with QR codes, complete with a web app for scanning and playing audio previews.
+This is a modern DIY solution that generates professional-quality Hitster cards with QR codes, complete with a web app for scanning and playing audio previews.
 
 <div align="center">
 
@@ -60,7 +60,7 @@ poetry install
         PLAYLIST_ID="your_playlist_id"
         ```
 
-> *Disclaimer*: Spotify has deprecated preview URLs from their API and most songs don't have any preview URL. Currently the only reliable option is to just play the whole song from the beginning instead of a cutout (not optimal for the game). This is configurable via the `SPOTIFY_USE_PREVIEW_URL` environment variable.
+> **Disclaimer**: Spotify has deprecated preview URLs from their API and most songs don't have any preview URL. Currently the only reliable option is to just play the whole song from the beginning instead of a cutout (not optimal for the game). This is configurable via the `SPOTIFY_USE_PREVIEW_URL` environment variable.
 
 ### Apple Music Setup
 
