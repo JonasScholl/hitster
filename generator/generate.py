@@ -10,6 +10,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 
 from generator.connectors import Song
 from generator.logger import item
+from generator.utils import get_env_var
 
 
 def generate_qr_codes(songs: list[Song]) -> None:
@@ -30,9 +31,11 @@ def generate_qr_codes(songs: list[Song]) -> None:
 def generate_cards_pdf(output_pdf: str) -> None:
     """Generate a PDF of the cards"""
 
-    item("Compiling Typst template...")
+    template_name = get_env_var("TEMPLATE_NAME", "black-white")
+
+    item(f"Compiling Typst template [highlight]{template_name}[/highlight]...")
     typst.compile_with_warnings(
-        "generator/templates/hitster.typ",
+        f"generator/templates/{template_name}.typ",
         output=output_pdf,
         root=".",
     )

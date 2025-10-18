@@ -1,21 +1,19 @@
-import os
-
 import spotipy
 
 from generator.connectors.interfaces import Connector, Song
 from generator.logger import skip
-from generator.utils import get_mandatory_env_var
+from generator.utils import get_env_var
 
 
 class SpotifyConnector(Connector):
     """Spotify API connector"""
 
     def __init__(self):
-        self._USE_PREVIEW_URL = os.getenv("SPOTIFY_USE_PREVIEW_URL", "false").lower() == "true"
+        self._USE_PREVIEW_URL = get_env_var("SPOTIFY_USE_PREVIEW_URL", "false").lower() == "true"
         self._client = spotipy.Spotify(
             auth_manager=spotipy.SpotifyClientCredentials(
-                client_id=get_mandatory_env_var("SPOTIFY_CLIENT_ID"),
-                client_secret=get_mandatory_env_var("SPOTIFY_CLIENT_SECRET"),
+                client_id=get_env_var("SPOTIFY_CLIENT_ID"),
+                client_secret=get_env_var("SPOTIFY_CLIENT_SECRET"),
             )
         )
 

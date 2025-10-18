@@ -6,7 +6,7 @@ import requests
 
 from generator.connectors.interfaces import Connector, Song
 from generator.logger import error, skip
-from generator.utils import get_mandatory_env_var
+from generator.utils import get_env_var
 
 
 class AppleMusicConnector(Connector):
@@ -15,9 +15,9 @@ class AppleMusicConnector(Connector):
     _BASE_URL = "https://api.music.apple.com"
 
     def __init__(self):
-        self._TEAM_ID = get_mandatory_env_var("APPLE_TEAM_ID")
-        self._KEY_ID = get_mandatory_env_var("APPLE_KEY_ID")
-        self._PRIVATE_KEY_PATH = get_mandatory_env_var("APPLE_PRIVATE_KEY_PATH")
+        self._TEAM_ID = get_env_var("APPLE_TEAM_ID")
+        self._KEY_ID = get_env_var("APPLE_KEY_ID")
+        self._PRIVATE_KEY_PATH = get_env_var("APPLE_PRIVATE_KEY_PATH")
 
         self._token = self._generate_token()
 
@@ -117,7 +117,7 @@ class AppleMusicConnector(Connector):
 
         # Add user token if available (for personal playlists)
         try:
-            user_token = get_mandatory_env_var("APPLE_MUSIC_USER_TOKEN")
+            user_token = get_env_var("APPLE_MUSIC_USER_TOKEN")
             headers["Music-User-Token"] = user_token
         except OSError:
             # User token is optional for public playlists

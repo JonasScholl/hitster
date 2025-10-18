@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from generator.connectors import resolve_connector
 from generator.generate import generate_cards_pdf, generate_overview_pdf, generate_qr_codes
 from generator.logger import header, section, step, success
-from generator.utils import get_mandatory_env_var
+from generator.utils import get_env_var
 
 
 def main() -> None:
@@ -23,7 +23,7 @@ def main() -> None:
     connector = resolve_connector()
 
     step("Fetching playlist songs...")
-    songs = connector.get_playlist_songs(get_mandatory_env_var("PLAYLIST_ID"))
+    songs = connector.get_playlist_songs(get_env_var("PLAYLIST_ID"))
     success(f"Retrieved {len(songs)} songs")
 
     Path("generated").mkdir(parents=True, exist_ok=True)
