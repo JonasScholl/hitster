@@ -1,0 +1,51 @@
+name: Test WebApp
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - "webapp/**"
+            - ".github/workflows/test-webapp.yml"
+    pull_request:
+        branches: [main]
+        paths:
+            - "webapp/**"
+            - ".github/workflows/test-webapp.yml"
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 10
+
+            - name: Install dependencies
+              run: |
+                  cd webapp
+                  pnpm install
+
+            - name: Build webapp
+              run: |
+                  cd webapp
+                  pnpm build
+
+            - name: Verify build output
+              run: |
+                  cd webapp
+                  if [ ! -f "dist/output.css" ]; then
+                    echo "Build failed: dist/output.css not found"
+                    exit 1
+                  fi
+                  echo "Build successful: dist/output.css created"
+                  ls -la dist/
