@@ -8,7 +8,6 @@ from rich.logging import RichHandler
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from rich.theme import Theme
 
-# Custom theme for consistent colors
 HITSTER_THEME = Theme(
     {
         "info": "cyan",
@@ -22,7 +21,6 @@ HITSTER_THEME = Theme(
     }
 )
 
-# Initialize console with custom theme
 console = Console(theme=HITSTER_THEME, stderr=True)
 
 
@@ -36,10 +34,9 @@ class HitsterLogger:
 
     def _setup_logging(self) -> None:
         """Setup rich logging handler with custom formatting."""
-        # Remove existing handlers
+
         logging.getLogger().handlers.clear()
 
-        # Create rich handler with custom formatting
         rich_handler = RichHandler(
             console=console,
             show_time=False,
@@ -48,11 +45,8 @@ class HitsterLogger:
             tracebacks_show_locals=False,
             markup=True,
         )
-
-        # Set custom format
         rich_handler.setFormatter(logging.Formatter(fmt="%(message)s", datefmt="[%X]"))
 
-        # Configure root logger
         logging.basicConfig(
             level=logging.INFO, format="%(message)s", handlers=[rich_handler]
         )
@@ -130,10 +124,8 @@ class HitsterLogger:
         console.print()
 
 
-# Global logger instance
 logger = HitsterLogger()
 
-# Convenience functions for direct usage
 info = logger.info
 success = logger.success
 warning = logger.warning
