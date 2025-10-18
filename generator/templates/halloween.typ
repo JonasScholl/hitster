@@ -10,8 +10,7 @@
   } else {
     "#000000"  // fallback
   };
-  
-  // Replace the fill color in the path element
+
   svg.replace("fill=\"#000000\"", "fill=\"" + color_hex + "\" ")
 }
 
@@ -102,7 +101,7 @@
 #let text_back_side(song, song_index) = {
   let bg_color = get_card_color(song_index)
   let text_color = get_text_color(song_index)
-  
+
   square(
     size: card_size,
     fill: bg_color,
