@@ -13,7 +13,7 @@ class AppleMusicConnector(Connector):
         self.team_id = get_env_var("APPLE_TEAM_ID")
         self.key_id = get_env_var("APPLE_KEY_ID")
         self.private_key_path = get_env_var("APPLE_PRIVATE_KEY_PATH")
-        self.base_url = "https://api.music.apple.com/v1"
+        self.base_url = "https://api.music.apple.com"
         self.token = self._generate_token()
 
     def get_playlist_songs(self, playlist_id):
@@ -21,9 +21,9 @@ class AppleMusicConnector(Connector):
         songs = []
 
         # Get playlist tracks
-        endpoint = f"/catalog/us/playlists/{playlist_id}/tracks"
+        endpoint = f"/v1/catalog/us/playlists/{playlist_id}/tracks"
         params = {
-            "limit": 100,  # Maximum allowed
+            "limit": 100,
             "include": "albums",
         }
 

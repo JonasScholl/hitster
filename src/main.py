@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import qrcode
 import qrcode.image.svg
 import typst
+from dotenv import load_dotenv
 from matplotlib.backends.backend_pdf import PdfPages
 
 from apple_music import AppleMusicConnector
@@ -18,6 +19,7 @@ from utils import get_env_var
 
 logging.basicConfig(level=logging.INFO)
 random.seed("hitster")
+load_dotenv()
 
 
 def generate_qr_codes(songs):
