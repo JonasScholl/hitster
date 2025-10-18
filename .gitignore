@@ -4,7 +4,6 @@
 .env
 
 *.pdf
-*.json
 *.p8
 
 generated

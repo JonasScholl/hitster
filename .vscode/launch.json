@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Generate Hitster Cards",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "generator.main",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "envFile": "${workspaceFolder}/.env",
+            "args": [],
+            "justMyCode": true,
+            "stopOnEntry": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}
