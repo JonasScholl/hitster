@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # Python
+  - package-ecosystem: "pip"
+    directory: "./"
+    target-branch: main
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "jonasscholl"
+    groups:
+      python:
+        patterns:
+          - "*"
+
+  # Node.js
+  - package-ecosystem: "npm"
+    directory: "/webapp"
+    target-branch: main
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "jonasscholl"
+    groups:
+      webapp:
+        patterns:
+          - "*"
