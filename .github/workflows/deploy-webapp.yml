@@ -1,10 +1,11 @@
-name: Deploy to GitHub Pages
+name: Deploy WebApp to GitHub Pages
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+    paths:
+      - "webapp/**"
+      - ".github/workflows/deploy-webapp.yml"
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
