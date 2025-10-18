@@ -31,7 +31,7 @@ def generate_qr_codes(songs: list[Song]) -> None:
 def generate_cards_pdf(output_pdf: str) -> None:
     """Generate a PDF of the cards"""
 
-    template_name = get_env_var("TEMPLATE_NAME", "black-white")
+    template_name = get_env_var("TEMPLATE", "black-white")
 
     item(f"Compiling Typst template [highlight]{template_name}[/highlight]...")
     typst.compile_with_warnings(
