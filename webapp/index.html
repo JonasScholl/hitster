@@ -428,25 +428,39 @@
                         return;
                     }
 
-                    // Basic URL validation
+                    // Strong URL validation
+                    let parsedUrl;
                     try {
-                        new URL(url);
+                        parsedUrl = new URL(url);
                     } catch {
                         this.qrResults.innerHTML = '<p class="text-red-400">Please enter a valid URL</p>';
                         return;
                     }
 
-                    // Check if it's a valid iTunes audio preview URL
-                    if (url.includes('itunes-assets/AudioPreview') ||
-                        url.includes('.aac.p.m4a') ||
-                        url.includes('audio-ssl.itunes.apple.com')) {
+                    // Only allow https URLs
+                    if (parsedUrl.protocol !== "https:") {
+                        this.qrResults.innerHTML = '<p class="text-red-400">Only HTTPS URLs are permitted.</p>';
+                        return;
+                    }
+
+                    // Allow only URLs from trusted domains (itunes/audio-ssl or with expected path/pattern)
+                    const allowedHosts = [
+                        "audio-ssl.itunes.apple.com",
+                        "itunes.apple.com",
+                        "itunes-assets.apple.com"
+                    ];
+                    const isAllowedHost = allowedHosts.some(h => parsedUrl.host.endsWith(h));
+
+                    // Check if it's a valid iTunes audio preview URL (allow only whitelisted hosts)
+                    if ((url.includes('itunes-assets/AudioPreview') ||
+                         url.includes('.aac.p.m4a') ||
+                         url.includes('audio-ssl.itunes.apple.com')) && isAllowedHost) {
 
                         this.qrResults.innerHTML = '<p class="text-green-400">Loading audio from URL...</p>';
                         this.loadAudio(url);
                     } else {
-                        this.qrResults.innerHTML = '<p class="text-yellow-400">This doesn\'t appear to be an iTunes audio preview URL. Validating...</p>';
-                        // Try to load it anyway with validation
-                        this.loadAudio(url);
+                        this.qrResults.innerHTML = '<p class="text-red-400">Only iTunes audio preview HTTPS URLs are permitted.</p>';
+                        return;
                     }
                 }
 
