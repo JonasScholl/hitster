@@ -9,11 +9,10 @@ import matplotlib.pyplot as plt
 import qrcode
 import qrcode.image.svg
 import typst
-from dotenv import load_dotenv
-from matplotlib.backends.backend_pdf import PdfPages
-
 from apple_music import AppleMusicConnector
+from dotenv import load_dotenv
 from interfaces import Connector
+from matplotlib.backends.backend_pdf import PdfPages
 from spotify import SpotifyConnector
 from utils import get_env_var
 
@@ -23,15 +22,16 @@ load_dotenv()
 
 
 def generate_qr_codes(songs):
-    if os.path.isdir("qr_codes"):
-        shutil.rmtree("qr_codes")
-    os.mkdir("qr_codes")
+    if os.path.isdir("generated/qr-codes"):
+        shutil.rmtree("generated/qr-codes")
+
+    os.makedirs("generated/qr-codes")
 
     for song in songs:
         img = qrcode.make(
             song["preview_url"], image_factory=qrcode.image.svg.SvgPathImage
         )
-        img.save(f"qr_codes/{song['id']}.svg")
+        img.save(f"generated/qr-codes/{song['id']}.svg")
 
 
 def generate_overview_pdf(songs, output_pdf):
@@ -70,18 +70,24 @@ def main():
     connector = resolve_connector()
     songs = connector.get_playlist_songs(get_env_var("PLAYLIST_ID"))
 
+    os.makedirs("generated", exist_ok=True)
+
     logging.info("Writing songs to file")
-    with open("songs.json", "w", encoding="utf-8") as file:
+    with open("generated/songs.json", "w", encoding="utf-8") as file:
         json.dump(songs, file, indent=4)
 
     logging.info("Generating QR codes")
     generate_qr_codes(songs)
 
     logging.info("Compiling Cards PDF")
-    typst.compile("hitster.typ", output="hitster.pdf")
+    typst.compile(
+        "generator/templates/hitster.typ",
+        output="generated/hitster.pdf",
+        root=".",
+    )
 
     logging.info("Compiling Year Overview PDF")
-    generate_overview_pdf(songs, "overview.pdf")
+    generate_overview_pdf(songs, "generated/overview.pdf")
 
     logging.info("Done")
 

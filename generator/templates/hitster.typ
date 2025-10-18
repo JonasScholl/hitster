@@ -1,4 +1,4 @@
-#let songs = json("songs.json")
+#let songs = json("../../generated/songs.json")
 
 //this is a4
 #let page_width = 210mm
@@ -36,7 +36,7 @@
     size: card_size,
     inset: 0.5cm,
     image(
-      "qr_codes/" + song.id + ".svg",
+      "../../generated/qr-codes/" + song.id + ".svg",
       width: 100%
     )
   )
