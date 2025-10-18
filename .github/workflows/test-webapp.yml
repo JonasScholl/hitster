@@ -1,4 +1,6 @@
 name: Test WebApp
+permissions:
+  contents: read
 
 on:
     push:
