@@ -282,7 +282,7 @@
                     // Check if it's an iTunes audio preview URL
                     if (decodedText.includes('itunes-assets/AudioPreview') ||
                         decodedText.includes('.aac.p.m4a') ||
-                        decodedText.includes('audio-ssl.itunes.apple.com')) {
+                        (isValidUrl && new URL(decodedText).host === 'audio-ssl.itunes.apple.com')) {
 
                         this.qrResults.innerHTML = '<p class="text-green-400">iTunes audio URL detected! Validating...</p>';
                         this.loadAudio(decodedText);
