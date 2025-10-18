@@ -1,7 +1,6 @@
 """Modern, fancy but minimalistic logging module using Rich."""
 
 import logging
-from typing import Optional
 
 from rich.console import Console
 from rich.logging import RichHandler
@@ -30,7 +29,7 @@ class HitsterLogger:
     def __init__(self, name: str = "hitster"):
         self.name = name
         self._setup_logging()
-        self._progress: Optional[Progress] = None
+        self._progress: Progress | None = None
 
     def _setup_logging(self) -> None:
         """Setup rich logging handler with custom formatting."""
@@ -47,9 +46,7 @@ class HitsterLogger:
         )
         rich_handler.setFormatter(logging.Formatter(fmt="%(message)s", datefmt="[%X]"))
 
-        logging.basicConfig(
-            level=logging.INFO, format="%(message)s", handlers=[rich_handler]
-        )
+        logging.basicConfig(level=logging.INFO, format="%(message)s", handlers=[rich_handler])
 
         self.logger = logging.getLogger(self.name)
 

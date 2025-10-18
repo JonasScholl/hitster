@@ -1,4 +1,5 @@
 import time
+from pathlib import Path
 
 import jwt
 import requests
@@ -54,11 +55,7 @@ class AppleMusicConnector(Connector):
                             skip(f"'{name}'", "no release year")
                             continue
 
-                        preview_url = (
-                            track.get("previews", [{}])[0].get("url")
-                            if track.get("previews")
-                            else None
-                        )
+                        preview_url = track.get("previews", [{}])[0].get("url") if track.get("previews") else None
                         if not preview_url:
                             skip(f"'{name}'", "no preview URL")
                             continue
@@ -74,7 +71,7 @@ class AppleMusicConnector(Connector):
                         )
 
                 # Check for next page
-                if "next" in data and data["next"]:
+                if data.get("next"):
                     endpoint = data["next"].replace(self._BASE_URL, "")
                     params = None  # Next URL already contains params
                 else:
@@ -98,7 +95,7 @@ class AppleMusicConnector(Connector):
 
     def _generate_token(self) -> str:
         """Generate JWT token for Apple Music API authentication"""
-        with open(self._PRIVATE_KEY_PATH, "r", encoding="utf-8") as key_file:
+        with Path(self._PRIVATE_KEY_PATH).open("r", encoding="utf-8") as key_file:
             private_key = key_file.read()
 
         headers = {"alg": "ES256", "kid": self._KEY_ID}
@@ -122,12 +119,10 @@ class AppleMusicConnector(Connector):
         try:
             user_token = get_mandatory_env_var("APPLE_MUSIC_USER_TOKEN")
             headers["Music-User-Token"] = user_token
-        except EnvironmentError:
+        except OSError:
             # User token is optional for public playlists
             pass
 
-        response = requests.get(
-            f"{self._BASE_URL}{endpoint}", headers=headers, params=params, timeout=30
-        )
+        response = requests.get(f"{self._BASE_URL}{endpoint}", headers=headers, params=params, timeout=30)
         response.raise_for_status()
         return response.json()

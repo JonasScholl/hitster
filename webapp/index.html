@@ -305,7 +305,6 @@
 
                         // Validate the audio URL by trying to load it
                         const isValidAudio = await this.validateAudioUrl(url);
-
                         if (!isValidAudio) {
                             this.qrResults.innerHTML = '<p class="text-red-400">Invalid or inaccessible audio URL. Please try a different QR code.</p>';
                             // Restart scanner after a delay

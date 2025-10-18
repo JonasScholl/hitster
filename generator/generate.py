@@ -1,6 +1,6 @@
-import os
 import shutil
 from collections import Counter
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import qrcode
@@ -15,10 +15,10 @@ from generator.logger import item
 def generate_qr_codes(songs: list[Song]) -> None:
     """Generate QR codes for the songs and save them to the generated/qr-codes directory"""
 
-    if os.path.isdir("generated/qr-codes"):
+    if Path("generated/qr-codes").is_dir():
         shutil.rmtree("generated/qr-codes")
 
-    os.makedirs("generated/qr-codes")
+    Path("generated/qr-codes").mkdir(parents=True, exist_ok=True)
 
     for i, song in enumerate(songs, 1):
         if i % 20 == 0 or i == len(songs):

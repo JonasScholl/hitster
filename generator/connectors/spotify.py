@@ -11,9 +11,7 @@ class SpotifyConnector(Connector):
     """Spotify API connector"""
 
     def __init__(self):
-        self._USE_PREVIEW_URL = (
-            os.getenv("SPOTIFY_USE_PREVIEW_URL", "false").lower() == "true"
-        )
+        self._USE_PREVIEW_URL = os.getenv("SPOTIFY_USE_PREVIEW_URL", "false").lower() == "true"
         self._client = spotipy.Spotify(
             auth_manager=spotipy.SpotifyClientCredentials(
                 client_id=get_mandatory_env_var("SPOTIFY_CLIENT_ID"),
@@ -61,9 +59,7 @@ class SpotifyConnector(Connector):
                         Song(
                             id=track["id"],
                             title=name,
-                            artists=[
-                                artist.get("name", "Unknown") for artist in artists
-                            ],
+                            artists=[artist.get("name", "Unknown") for artist in artists],
                             year=year,
                             url=url,
                         )

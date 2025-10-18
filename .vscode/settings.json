@@ -1,3 +1,13 @@
 {
-    "python.languageServer": "None"
+    "python.languageServer": "None",
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+        }
+    },
+    "ruff.lint.enable": true,
+    "pylint.enabled": false
 }

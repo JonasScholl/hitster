@@ -20,4 +20,4 @@ def resolve_connector() -> Connector:
             raise ValueError(f"Invalid provider: {provider}")
 
 
-__all__ = ["resolve_connector", "Connector", "Song"]
+__all__ = ["Connector", "Song", "resolve_connector"]
