@@ -52,7 +52,7 @@ def generate_overview_pdf(songs: list[Song], output_pdf: str) -> None:
     item(f"Creating chart for years {min_year}-{max_year}...")
     plt.figure()
     plt.bar(all_years, counts, color="black")
-    plt.ylabel("number of songs released")
+    plt.ylabel("Songs per Year")
     plt.xticks()
 
     with PdfPages(output_pdf) as pdf:
