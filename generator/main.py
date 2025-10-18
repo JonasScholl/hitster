@@ -1,95 +1,57 @@
 import json
-import logging
 import os
 import random
-import shutil
-from collections import Counter
 
-import matplotlib.pyplot as plt
-import qrcode
-import qrcode.image.svg
-import typst
-from apple_music import AppleMusicConnector
 from dotenv import load_dotenv
-from interfaces import Connector
-from matplotlib.backends.backend_pdf import PdfPages
-from spotify import SpotifyConnector
-from utils import get_env_var
 
-logging.basicConfig(level=logging.INFO)
+from generator.connectors import resolve_connector
+from generator.generate import (
+    generate_cards_pdf,
+    generate_overview_pdf,
+    generate_qr_codes,
+)
+from generator.logger import header, section, step, success
+from generator.utils import get_mandatory_env_var
+
 random.seed("hitster")
 load_dotenv()
 
 
-def generate_qr_codes(songs):
-    if os.path.isdir("generated/qr-codes"):
-        shutil.rmtree("generated/qr-codes")
+def main() -> None:
+    """Main function to generate the cards and overview PDF"""
 
-    os.makedirs("generated/qr-codes")
+    header("🎵 Hitster Card Generator")
 
-    for song in songs:
-        img = qrcode.make(
-            song["preview_url"], image_factory=qrcode.image.svg.SvgPathImage
-        )
-        img.save(f"generated/qr-codes/{song['id']}.svg")
-
-
-def generate_overview_pdf(songs, output_pdf):
-    year_counts = Counter(int(song["year"]) for song in songs if "year" in song)
-
-    min_year = min(year_counts.keys())
-    max_year = max(year_counts.keys())
-    all_years = list(range(min_year, max_year + 1))
-    counts = [year_counts.get(year, 0) for year in all_years]
-
-    plt.figure()
-    plt.bar(all_years, counts, color="black")
-    plt.ylabel("number of songs released")
-    plt.xticks()
-
-    with PdfPages(output_pdf) as pdf:
-        pdf.savefig()
-        plt.close()
-
-
-def resolve_connector() -> Connector:
-    provider = get_env_var("PROVIDER")
-    if provider == "spotify":
-        logging.info("Using Spotify connector")
-        return SpotifyConnector()
-    elif provider == "apple-music":
-        logging.info("Using Apple Music connector")
-        return AppleMusicConnector()
-    else:
-        raise ValueError(f"Invalid provider: {provider}")
-
-
-def main():
-    logging.info("Starting song retrieval")
-
+    section("Retrieving Songs")
+    step("Connecting to music service...")
     connector = resolve_connector()
-    songs = connector.get_playlist_songs(get_env_var("PLAYLIST_ID"))
+
+    step("Fetching playlist songs...")
+    songs = connector.get_playlist_songs(get_mandatory_env_var("PLAYLIST_ID"))
+    success(f"Retrieved {len(songs)} songs")
 
     os.makedirs("generated", exist_ok=True)
 
-    logging.info("Writing songs to file")
+    section("Processing Data")
+    step("Writing songs to JSON file...")
     with open("generated/songs.json", "w", encoding="utf-8") as file:
-        json.dump(songs, file, indent=4)
+        json.dump([song.model_dump() for song in songs], file, indent=4)
+    success("Songs data saved")
 
-    logging.info("Generating QR codes")
+    section("Generating Assets")
+    step("Creating QR codes...")
     generate_qr_codes(songs)
+    success("QR codes generated")
 
-    logging.info("Compiling Cards PDF")
-    typst.compile(
-        "generator/templates/hitster.typ",
-        output="generated/hitster.pdf",
-        root=".",
-    )
+    step("Building cards PDF...")
+    generate_cards_pdf("generated/hitster.pdf")
+    success("Cards PDF created")
 
-    logging.info("Compiling Year Overview PDF")
+    step("Creating year overview PDF...")
     generate_overview_pdf(songs, "generated/overview.pdf")
+    success("Overview PDF created")
 
-    logging.info("Done")
+    header("🎉 Generation Complete!")
 
 
 if __name__ == "__main__":

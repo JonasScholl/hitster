@@ -67,7 +67,7 @@
           center + horizon,
           text(
             weight: "black",
-            song.year,
+            str(song.year),
             size: 0.25 * card_size
           )
         ),
@@ -78,7 +78,7 @@
         align(
           center + horizon,
           text(
-            [_ #song.name _],
+            [_ #song.title _],
             weight: 500,
             size: 0.07 * card_size
           )
