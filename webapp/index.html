@@ -452,9 +452,11 @@
                     const isAllowedHost = allowedHosts.some(h => parsedUrl.host.endsWith(h));
 
                     // Check if it's a valid iTunes audio preview URL (allow only whitelisted hosts)
-                    if ((url.includes('itunes-assets/AudioPreview') ||
-                         url.includes('.aac.p.m4a') ||
-                         url.includes('audio-ssl.itunes.apple.com')) && isAllowedHost) {
+                    const audioPreviewPathAllowed =
+                        parsedUrl.pathname.includes('itunes-assets/AudioPreview') ||
+                        parsedUrl.pathname.endsWith('.aac.p.m4a');
+
+                    if (audioPreviewPathAllowed && isAllowedHost) {
 
                         this.qrResults.innerHTML = '<p class="text-green-400">Loading audio from URL...</p>';
                         this.loadAudio(url);
