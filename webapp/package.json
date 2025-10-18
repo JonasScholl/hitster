@@ -6,8 +6,8 @@
     "scripts": {
         "dev": "concurrently \"pnpm build:css:watch\" \"pnpm serve\"",
         "build": "pnpm build:css",
-        "build:css": "tailwindcss -i ./styles.css -o ./dist/output.css --minify",
-        "build:css:watch": "tailwindcss -i ./styles.css -o ./dist/output.css --watch",
+        "build:css": "postcss ./styles.css -o ./dist/output.css --env production",
+        "build:css:watch": "postcss ./styles.css -o ./dist/output.css --watch",
         "serve": "live-server --port=3000 --open=/ --ignore=node_modules,generator,generatd,assets,vscode,github"
     },
     "keywords": [
@@ -18,8 +18,10 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "tailwindcss": "^4.1.14",
+        "@tailwindcss/postcss": "^4.1.14",
+        "concurrently": "^9.2.1",
         "live-server": "^1.2.2",
-        "concurrently": "^9.2.1"
+        "postcss-cli": "^11.0.1",
+        "tailwindcss": "^4.1.14"
     }
 }
