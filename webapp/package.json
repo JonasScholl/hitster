@@ -18,8 +18,8 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "tailwindcss": "^3.4.0",
+        "tailwindcss": "^4.1.14",
         "live-server": "^1.2.2",
-        "concurrently": "^8.2.2"
+        "concurrently": "^9.2.1"
     }
 }
