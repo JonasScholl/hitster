@@ -15,8 +15,8 @@ class SpotifyConnector(Connector):
     def __init__(self):
         self._client = spotipy.Spotify(
             auth_manager=spotipy.SpotifyClientCredentials(
-                client_id=get_mandatory_env_var("CLIENT_ID"),
-                client_secret=get_mandatory_env_var("CLIENT_SECRET"),
+                client_id=get_mandatory_env_var("SPOTIFY_CLIENT_ID"),
+                client_secret=get_mandatory_env_var("SPOTIFY_CLIENT_SECRET"),
             )
         )
 
