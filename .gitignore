@@ -1,6 +1,7 @@
 .venv
 .idea
 .cache
+.ruff_cache
 .env
 
 *.pdf
