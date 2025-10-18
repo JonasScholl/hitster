@@ -16,7 +16,21 @@
 }
 
 .progress-bar {
-    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+    background-color: #dec9e9;
+}
+
+button {
+    background: linear-gradient(155deg, #4f46e5 0%, #7c3aed 100%);
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button#play-pause-btn {
+    background: none;
+    background-color: #dec9e9;
 }
 
 /* Volume slider styling */

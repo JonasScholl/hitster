@@ -27,13 +27,31 @@
 
             <div class="text-center mt-8">
                 <button id="start-scanner"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg">
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg cursor-pointer">
                     Start Scanner
                 </button>
                 <button id="stop-scanner"
-                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg ml-4 hidden">
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg ml-4 hidden cursor-pointer">
                     Stop Scanner
                 </button>
+            </div>
+
+            <!-- Scanner Info Box -->
+            <div
+                class="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-lg p-3">
+                <div class="flex items-start space-x-2">
+                    <div class="flex-shrink-0">
+                        <svg class="w-4 h-4 text-gray-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        <p>This scanner is for <span class="text-gray-300">Apple Music</span> QR codes. For Spotify
+                            cards, use your regular camera or QR scanner app.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Camera Permission Help -->
@@ -59,12 +77,12 @@
                     </div>
                     <div class="bg-gray-700 rounded p-3">
                         <p class="font-semibold text-white mb-2">Alternative:</p>
-                        <p class="text-xs">You can also manually enter an iTunes preview URL below:</p>
-                        <div class="mt-2">
-                            <input type="url" id="manual-url" placeholder="Paste iTunes preview URL here..."
+                        <p class="text-xs">You can also manually enter the card audio URL below:</p>
+                        <div class="mt-2 flex gap-2">
+                            <input type="url" id="manual-url" placeholder="Paste card audio URL here..."
                                 class="w-full px-3 py-2 bg-gray-600 text-white rounded text-xs">
                             <button id="load-manual-url"
-                                class="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-xs">
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-xs text-nowrap">
                                 Load Audio
                             </button>
                         </div>
@@ -91,9 +109,9 @@
                 <!-- Audio Player Card -->
                 <div class="audio-controls rounded-2xl p-8 shadow-2xl">
                     <!-- Play/Pause Button -->
-                    <div class="flex justify-center mb-10">
+                    <div class="flex justify-center mb-4">
                         <button id="play-pause-btn"
-                            class="bg-white text-gray-900 w-24 h-24 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition duration-300">
+                            class="bg-white text-gray-700 w-24 h-24 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition duration-300">
                             <svg id="play-icon" class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"
                                 style="margin-left: 2px;">
                                 <path fill-rule="evenodd"
@@ -124,6 +142,14 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Scan new card button -->
+                <div class="text-center mt-10">
+                    <button id="scan-new-card"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-lg cursor-pointer">
+                        Scan new Card
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -149,6 +175,7 @@
                     this.cameraHelp = document.getElementById('camera-help');
                     this.manualUrlInput = document.getElementById('manual-url');
                     this.loadManualUrlBtn = document.getElementById('load-manual-url');
+                    this.scanNewCardBtn = document.getElementById('scan-new-card');
 
                     // Player elements
                     this.playPauseBtn = document.getElementById('play-pause-btn');
@@ -158,7 +185,6 @@
                     this.durationEl = document.getElementById('duration');
                     this.progressBar = document.getElementById('progress-bar');
                     this.progressContainer = document.getElementById('progress-container');
-                    this.volumeSlider = document.getElementById('volume-slider');
                     this.closePlayerBtn = document.getElementById('close-player');
                 }
 
@@ -175,7 +201,9 @@
                     this.playPauseBtn.addEventListener('click', () => this.togglePlayPause());
                     this.closePlayerBtn.addEventListener('click', () => this.closePlayer());
                     this.progressContainer.addEventListener('click', (e) => this.seekAudio(e));
-                    this.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
+                    this.scanNewCardBtn.addEventListener('click', () => {
+                        this.closePlayer(true); // true indicates we want to start scanning again
+                    });
 
                     // Audio events
                     this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
@@ -202,6 +230,11 @@
                             }
                         } else {
                             this.qrResults.innerHTML = '<p class="text-red-400">Camera not supported on this device/browser</p>';
+                            this.cameraHelp.classList.remove('hidden');
+
+                            // Reset button states on error
+                            this.startScannerBtn.classList.remove('hidden');
+                            this.stopScannerBtn.classList.add('hidden');
                             return;
                         }
 
@@ -231,6 +264,10 @@
                     } catch (err) {
                         console.error('Error starting scanner:', err);
                         this.showCameraPermissionError(err);
+
+                        // Reset button states on error
+                        this.startScannerBtn.classList.remove('hidden');
+                        this.stopScannerBtn.classList.add('hidden');
                     }
                 }
 
@@ -304,7 +341,7 @@
                         // Set audio source
                         this.currentAudioUrl = url;
                         this.audio.src = url;
-                        this.audio.volume = this.volumeSlider.value / 100;
+                        this.audio.volume = 1.0; // Set to full volume
 
                         // Show player page only after validation
                         this.showPlayerPage();
@@ -367,7 +404,7 @@
                     this.playerPage.classList.remove('hidden');
                 }
 
-                closePlayer() {
+                closePlayer(restartScanner = false) {
                     // Stop audio
                     this.audio.pause();
                     this.audio.src = '';
@@ -387,6 +424,14 @@
                     this.qrResults.innerHTML = '';
                     this.manualUrlInput.value = '';
                     this.cameraHelp.classList.add('hidden');
+
+                    // If requested, start the scanner again
+                    if (restartScanner) {
+                        // Small delay to ensure the UI has updated
+                        setTimeout(() => {
+                            this.startScanner();
+                        }, 100);
+                    }
                 }
 
                 showCameraPermissionError(error) {
@@ -408,13 +453,11 @@
 
                 loadManualUrl() {
                     const url = this.manualUrlInput.value.trim();
-
                     if (!url) {
                         this.qrResults.innerHTML = '<p class="text-yellow-400">Please enter a URL</p>';
                         return;
                     }
 
-                    // Strong URL validation
                     let parsedUrl;
                     try {
                         parsedUrl = new URL(url);
@@ -423,13 +466,11 @@
                         return;
                     }
 
-                    // Only allow https URLs
                     if (parsedUrl.protocol !== "https:") {
                         this.qrResults.innerHTML = '<p class="text-red-400">Only HTTPS URLs are permitted.</p>';
                         return;
                     }
 
-                    // Allow only URLs from trusted domains (itunes/audio-ssl or with expected path/pattern)
                     const allowedHosts = [
                         "audio-ssl.itunes.apple.com",
                         "itunes.apple.com",
@@ -437,17 +478,15 @@
                     ];
                     const isAllowedHost = allowedHosts.some(h => parsedUrl.host.endsWith(h));
 
-                    // Check if it's a valid iTunes audio preview URL (allow only whitelisted hosts)
                     const audioPreviewPathAllowed =
                         parsedUrl.pathname.includes('itunes-assets/AudioPreview') ||
                         parsedUrl.pathname.endsWith('.aac.p.m4a');
 
                     if (audioPreviewPathAllowed && isAllowedHost) {
-
                         this.qrResults.innerHTML = '<p class="text-green-400">Loading audio from URL...</p>';
                         this.loadAudio(url);
                     } else {
-                        this.qrResults.innerHTML = '<p class="text-red-400">Only iTunes audio preview HTTPS URLs are permitted.</p>';
+                        this.qrResults.innerHTML = '<p class="text-red-400">Only Apple Music audio preview URLs are permitted.</p>';
                         return;
                     }
                 }
@@ -498,10 +537,6 @@
                     const newTime = percentage * this.audio.duration;
 
                     this.audio.currentTime = newTime;
-                }
-
-                setVolume(value) {
-                    this.audio.volume = value / 100;
                 }
 
                 audioEnded() {
