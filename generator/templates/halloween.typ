@@ -36,10 +36,6 @@
   rgb("#9FBCBF"),
 )
 
-// Image arrays for random selection
-#let bat_images = ("bat_01.svg", "bat_02.svg", "bat_03.svg", "bat_04.svg", "bat_05.svg", "bat_06.svg", "bat_07.svg", "bat_08.svg", "bat_09.svg")
-#let tombstone_images = ("tombstone_01.svg", "tombstone_02.svg", "tombstone_03.svg", "tombstone_04.svg", "tombstone_05.svg", "tombstone_06.svg", "tombstone_07.svg", "tombstone_08.svg", "tombstone_09.svg")
-
 #assert(rows * card_size + 2 * marking_padding + margin_y <= page_height)
 #assert(cols * card_size + 2 * marking_padding + margin_x <= page_width)
 
@@ -133,6 +129,8 @@
         } else {
           right + bottom
         },
+        dx: if corner == 0 { -0.025 * card_size } else if corner == 1 { 0.025 * card_size } else { 0mm },
+        dy: if corner < 2 { -0.025 * card_size } else { 0.05 * card_size  },
         image.decode(colorized_image, width: 0.15 * card_size)
       )
 
