@@ -1,17 +1,17 @@
 #let songs = json("../../generated/songs.json")
 
-#let colorize(svg, color) = {
-  let color_hex = if color == black {
-    "#000000"
+#let colorize(svg, color, alpha) = {
+  let color_rgba = if color == black {
+    "rgba(0, 0, 0, " + str(alpha) + ")"
   } else if color == white {
-    "#FFFFFF"
+    "rgba(255, 255, 255, " + str(alpha) + ")"
   } else if color == rgb("#CCCCCC") {
-    "#CCCCCC"
+    "rgba(204, 204, 204, " + str(alpha) + ")"
   } else {
-    "#000000"  // fallback
+    "rgba(0, 0, 0, " + str(alpha) + ")"  // fallback
   };
 
-  svg.replace("fill=\"#000000\"", "fill=\"" + color_hex + "\" ")
+  svg.replace("fill=\"#000000\"", "fill=\"" + color_rgba + "\" ")
 }
 
 //this is a4
@@ -35,6 +35,10 @@
   rgb("#B65718"),
   rgb("#9FBCBF"),
 )
+
+// Image arrays for random selection
+#let bat_images = ("bat_01.svg", "bat_02.svg", "bat_03.svg", "bat_04.svg", "bat_05.svg", "bat_06.svg", "bat_07.svg", "bat_08.svg", "bat_09.svg")
+#let tombstone_images = ("tombstone_01.svg", "tombstone_02.svg", "tombstone_03.svg", "tombstone_04.svg", "tombstone_05.svg", "tombstone_06.svg", "tombstone_07.svg", "tombstone_08.svg", "tombstone_09.svg")
 
 #assert(rows * card_size + 2 * marking_padding + margin_y <= page_height)
 #assert(cols * card_size + 2 * marking_padding + margin_x <= page_width)
@@ -85,7 +89,7 @@
   let text_color = get_text_color(song_index)
 
   let qr_code = read("../../generated/qr-codes/" + song.id + ".svg")
-  let colorized_qr_code = colorize(qr_code, text_color)
+  let colorized_qr_code = colorize(qr_code, text_color, 1.0)
 
   square(
     size: card_size,
@@ -102,52 +106,80 @@
   let bg_color = get_card_color(song_index)
   let text_color = get_text_color(song_index)
 
+  // Random image and corner selection based on song index
+  let corner = calc.rem(song_index, 4)  // 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right
+  let is_top_corner = corner <= 1
+  let image_name = if is_top_corner {
+    "bat_0" + str(calc.rem(song_index, 9) + 1) + ".svg"
+  } else {
+    "tombstone_0" + str(calc.rem(song_index, 9) + 1) + ".svg"
+  }
+  let image_svg = read("../../generator/templates/images/" + image_name)
+  let colorized_image = colorize(image_svg, text_color, 0.5)
+
   square(
     size: card_size,
     fill: bg_color,
     inset: 0.05 * card_size,
-    stack(
-      block(
-        height: 0.25 * card_size,
-        width: 100%,
-        align(
-          center + horizon,
-          text(
-            //for no-wrap of artist names
-            song.artists.map(artist => box(artist)).join([, ]),
-            weight: 500,
-            size: 0.07 * card_size,
-            fill: text_color
-          )
+    [
+      // Random corner image overlay
+      #place(
+        if corner == 0 {
+          left + top
+        } else if corner == 1 {
+          right + top
+        } else if corner == 2 {
+          left + bottom
+        } else {
+          right + bottom
+        },
+        image.decode(colorized_image, width: 0.15 * card_size)
+      )
+
+      // Main content
+      #stack(
+        block(
+          height: 0.25 * card_size,
+          width: 100%,
+          align(
+            center + horizon,
+            text(
+              //for no-wrap of artist names
+              song.artists.map(artist => box(artist)).join([, ]),
+              weight: 500,
+              size: 0.07 * card_size,
+              fill: text_color
+            )
+          ),
         ),
-      ),
-      block(
-        height: 0.3 * card_size,
-        width: 100%,
-        align(
-          center + horizon,
-          text(
-            weight: "black",
-            str(song.year),
-            size: 0.25 * card_size,
-            fill: text_color
-          )
+        block(
+          height: 0.3 * card_size,
+          width: 100%,
+          align(
+            center + horizon,
+            text(
+              weight: "black",
+              str(song.year),
+              size: 0.25 * card_size,
+              fill: text_color
+            )
+          ),
         ),
-      ),
-      block(
-        height: 0.35 * card_size,
-        width: 100%,
-        align(
-          center + horizon,
-          text(
-            [_ #song.title _],
-            weight: 500,
-            size: 0.07 * card_size,
-            fill: text_color
+        block(
+          height: 0.35 * card_size,
+          width: 100%,
+          align(
+            center + horizon,
+            text(
+              [_ #song.title _],
+              weight: 500,
+              size: 0.07 * card_size,
+              fill: text_color
+            )
           )
         )
       )
-    )
+    ]
   )
 }
 
