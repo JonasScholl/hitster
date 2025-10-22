@@ -40,9 +40,9 @@ jobs:
       - name: Verify build output
         run: |
           cd webapp
-          if [ ! -f "dist/output.css" ]; then
-            echo "Build failed: dist/output.css not found"
+          if [ ! -f "dist/index.html" ]; then
+            echo "Build failed: dist/index.html not found"
             exit 1
           fi
-          echo "Build successful: dist/output.css created"
+          echo "Build successful: dist/index.html created"
           ls -la dist/
