@@ -42,7 +42,7 @@ jobs:
           cd webapp
           pnpm install
 
-      - name: Build CSS
+      - name: Build React App
         run: |
           cd webapp
           pnpm build
@@ -53,7 +53,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./webapp"
+          path: "./webapp/dist"
 
   deploy:
     environment:
