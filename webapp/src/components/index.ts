@@ -1,6 +1,7 @@
 // Main components
 export { default as App } from '../App';
 export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as GlobalScannerControls } from './GlobalScannerControls';
 
 // Scanner components
 export { default as CameraHelpModal } from './scanner/CameraHelpModal';

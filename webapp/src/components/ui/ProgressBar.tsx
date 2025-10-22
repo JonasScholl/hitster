@@ -4,7 +4,7 @@ import { calculateProgressPercentage } from "../../utils/timeUtils";
 interface ProgressBarProps {
   currentTime: number;
   duration: number;
-  onSeek: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onSeek: (time: number) => void;
   className?: string;
 }
 
@@ -24,7 +24,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
       <div
         className="w-full bg-gray-700 rounded-full h-2 cursor-pointer"
-        onClick={onSeek}
+        onClick={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const width = rect.width;
+          const percentage = clickX / width;
+          const newTime = percentage * duration;
+          onSeek(newTime);
+        }}
       >
         <div
           className="progress-bar h-2 rounded-full transition-all duration-300"

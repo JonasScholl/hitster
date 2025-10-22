@@ -7,7 +7,7 @@ interface AudioPlayerProps {
   currentTime: number;
   duration: number;
   onTogglePlayPause: () => void;
-  onProgressClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onSeek: (time: number) => void;
   className?: string;
 }
 
@@ -16,7 +16,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   currentTime,
   duration,
   onTogglePlayPause,
-  onProgressClick,
+  onSeek,
   className = "",
 }) => {
   return (
@@ -30,7 +30,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       <ProgressBar
         currentTime={currentTime}
         duration={duration}
-        onSeek={onProgressClick}
+        onSeek={onSeek}
       />
     </div>
   );

@@ -21,8 +21,6 @@ export const ALLOWED_HOSTS: AllowedHosts = {
 export const AUDIO_VALIDATION_TIMEOUT = 5000;
 
 export const SCANNER_MESSAGES = {
-  ACTIVE: "Scanner active - point camera at QR code",
-  STOPPED: "Scanner stopped",
   CAMERA_NOT_SUPPORTED: "Camera not supported on this device/browser",
   INVALID_URL: "This doesn't appear to be a valid URL.",
   INVALID_AUDIO_URL: "This doesn't appear to be an audio URL.",

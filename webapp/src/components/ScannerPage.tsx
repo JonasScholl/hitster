@@ -1,18 +1,14 @@
 import React from "react";
-import { useScanner } from "../hooks/useScanner";
+import { useAppContext } from "../contexts/AppContext";
 import CameraHelpModal from "./scanner/CameraHelpModal";
 import QRCodeReader from "./scanner/QRCodeReader";
-import ScannerControls from "./scanner/ScannerControls";
 import ScannerInfo from "./scanner/ScannerInfo";
 import ScannerMessage from "./scanner/ScannerMessage";
+import Button from "./ui/Button";
 
-interface ScannerPageProps {
-  onAudioDetected: (url: string) => void;
-}
-
-const ScannerPage: React.FC<ScannerPageProps> = ({ onAudioDetected }) => {
-  const { state, qrReaderRef, startScanner, loadManualUrl, setManualUrl } =
-    useScanner({ onAudioDetected });
+const ScannerPage: React.FC = () => {
+  const { scanner, qrReaderRef, startScanner, loadManualUrl, setManualUrl } =
+    useAppContext();
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -29,24 +25,25 @@ const ScannerPage: React.FC<ScannerPageProps> = ({ onAudioDetected }) => {
         <p className="text-gray-300 text-lg">Scan a QR code to play music</p>
       </div>
 
-      <QRCodeReader qrReaderRef={qrReaderRef} />
-      <ScannerMessage message={state.message} />
+      {!scanner.isScanning && (
+        <div className="mt-8 text-center">
+          <Button onClick={startScanner}>Start Scanner</Button>
+        </div>
+      )}
 
-      <ScannerControls
-        isScanning={state.isScanning}
-        onStartScanner={startScanner}
-        className="mt-8"
-      />
+      <QRCodeReader qrReaderRef={qrReaderRef} />
+      <ScannerMessage message={scanner.message} />
+
+      {scanner.showCameraHelp && (
+        <CameraHelpModal
+          manualUrl={scanner.manualUrl}
+          onManualUrlChange={setManualUrl}
+          onLoadManualUrl={loadManualUrl}
+          onKeyPress={handleKeyPress}
+        />
+      )}
 
       <ScannerInfo />
-
-      <CameraHelpModal
-        isVisible={state.showCameraHelp}
-        manualUrl={state.manualUrl}
-        onManualUrlChange={setManualUrl}
-        onLoadManualUrl={loadManualUrl}
-        onKeyPress={handleKeyPress}
-      />
     </div>
   );
 };

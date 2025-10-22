@@ -3,7 +3,6 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 
 interface CameraHelpModalProps {
-  isVisible: boolean;
   manualUrl: string;
   onManualUrlChange: (url: string) => void;
   onLoadManualUrl: () => void;
@@ -12,15 +11,12 @@ interface CameraHelpModalProps {
 }
 
 const CameraHelpModal: React.FC<CameraHelpModalProps> = ({
-  isVisible,
   manualUrl,
   onManualUrlChange,
   onLoadManualUrl,
   onKeyPress,
   className = "",
 }) => {
-  if (!isVisible) return null;
-
   return (
     <div
       className={`mt-8 max-w-lg mx-auto bg-gray-800 rounded-lg p-6 ${className}`}

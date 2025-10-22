@@ -1,30 +1,23 @@
-import { useState } from "react";
+import React from "react";
 import PlayerPage from "./components/PlayerPage";
 import ScannerPage from "./components/ScannerPage";
-import { AudioData, PageType } from "./types";
+import { AppProvider, useAppContext } from "./contexts/AppContext";
 
-function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>("scanner");
-  const [audioData, setAudioData] = useState<AudioData | null>(null);
-
-  const handleAudioDetected = (url: string) => {
-    setAudioData({ url });
-    setCurrentPage("player");
-  };
-
-  const handleClosePlayer = (_restartScanner = false) => {
-    setAudioData(null);
-    setCurrentPage("scanner");
-  };
+const AppContent: React.FC = () => {
+  const { currentPage } = useAppContext();
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {currentPage === "scanner" ? (
-        <ScannerPage onAudioDetected={handleAudioDetected} />
-      ) : (
-        <PlayerPage audioData={audioData!} onClose={handleClosePlayer} />
-      )}
+      {currentPage === "scanner" ? <ScannerPage /> : <PlayerPage />}
     </div>
+  );
+};
+
+function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }
 
