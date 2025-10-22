@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+/* Custom styles */
+.scanner-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#qr-reader {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.audio-controls {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.progress-bar {
+    background-color: #dec9e9;
+}
+
+button {
+    background: linear-gradient(155deg, #4f46e5 0%, #7c3aed 100%);
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button#play-pause-btn {
+    background: none;
+    background-color: #dec9e9;
+}
