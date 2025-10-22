@@ -1,15 +1,10 @@
 import { useState } from "react";
 import PlayerPage from "./components/PlayerPage";
 import ScannerPage from "./components/ScannerPage";
-
-export interface AudioData {
-  url: string;
-}
+import { AudioData, PageType } from "./types";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<"scanner" | "player">(
-    "scanner"
-  );
+  const [currentPage, setCurrentPage] = useState<PageType>("scanner");
   const [audioData, setAudioData] = useState<AudioData | null>(null);
 
   const handleAudioDetected = (url: string) => {
