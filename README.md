@@ -132,6 +132,7 @@ An overview diagram of the release year distribution is automatically created as
 |----------|----------|-------------|
 | `PROVIDER` | ✅ | Music service: `spotify` or `apple-music` |
 | `PLAYLIST_ID` | ✅ | Playlist identifier from your music service |
+| `THEME` | Optional | Card theme: `black-white`, `colored`, or `halloween` (default: `black-white`) |
 | `SPOTIFY_CLIENT_ID` | Spotify | Spotify app client ID |
 | `SPOTIFY_CLIENT_SECRET` | Spotify | Spotify app client secret |
 | `SPOTIFY_USE_PREVIEW_URL` | Spotify, Optional | Use preview URLs instead of full tracks |
@@ -140,20 +141,29 @@ An overview diagram of the release year distribution is automatically created as
 | `APPLE_PRIVATE_KEY_PATH` | Apple Music | Path to your .p8 private key file |
 | `APPLE_MUSIC_USER_TOKEN` | Apple Music | User token for private playlists |
 
-### Customization
+## 🎨 Themes
 
-- **Card Layout**: Edit `generator/templates/hitster.typ` for visual customization
-- **Processing**: Adjust filtering logic in connector files
+Set the `THEME` environment variable to choose your card design:
+
+| Theme | Description |
+|-------|-------------|
+| `black-white` | Clean black and white design (default) |
+| `colored` | Vibrant colors with 5-color palette |
+| `halloween` | Halloween theme with spooky graphics |
+
+```bash
+THEME="colored"  # Example usage
+```
 
 ## 📁 Project Structure
 
 ```
 hitster/
-├── generator/           # Card generation engine
-│   ├── connectors/     # Music service integrations
-│   ├── templates/      # Typst card templates
+├── generator/         # Card generation engine
+│   ├── connectors/    # Music service integrations
+│   ├── themes/        # Typst card themes
 │   └── main.py        # Main generation script
-├── generated/          # Output files (PDFs, QR codes)
+├── generated/         # Output files (PDFs, QR codes)
 └── assets/            # Sample images and resources
 ```
 

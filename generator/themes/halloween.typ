@@ -110,7 +110,7 @@
   } else {
     "tombstone_0" + str(calc.rem(song_index, 9) + 1) + ".svg"
   }
-  let image_svg = read("../../generator/templates/images/" + image_name)
+  let image_svg = read("../../generator/themes/images/" + image_name)
   let colorized_image = colorize(image_svg, text_color, 0.5)
 
   square(
