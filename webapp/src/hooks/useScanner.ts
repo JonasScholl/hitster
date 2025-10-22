@@ -57,7 +57,7 @@ export const useScanner = ({ onAudioDetected }: UseScannerProps) => {
           }
         );
 
-        updateState({ isScanning: true });
+        updateState({ isScanning: true, message: "" });
       }
     } catch (err) {
       console.error("Error starting scanner:", err);
@@ -70,7 +70,7 @@ export const useScanner = ({ onAudioDetected }: UseScannerProps) => {
       try {
         await scannerRef.current.stop();
         scannerRef.current = null;
-        updateState({ isScanning: false });
+        updateState({ isScanning: false, message: "" });
       } catch (err) {
         console.error("Error stopping scanner:", err);
       }

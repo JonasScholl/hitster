@@ -20,7 +20,7 @@ const QRCodeReader: React.FC<QRCodeReaderProps> = ({
         className="bg-gray-800 rounded-xl shadow-2xl"
       />
       {scanner.isScanning && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-2 right-2">
           <CloseIconButton onClick={stopScanner} ariaLabel="Close scanner" />
         </div>
       )}

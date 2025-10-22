@@ -100,6 +100,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setScanner((prev) => ({
           ...prev,
           isScanning: true,
+          message: "",
         }));
       }
     } catch (err) {
@@ -116,6 +117,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setScanner((prev) => ({
           ...prev,
           isScanning: false,
+          message: "",
         }));
       } catch (err) {
         console.error("Error stopping scanner:", err);
@@ -236,6 +238,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       setPlayer((prev) => ({ ...prev, isPlaying: false, currentTime: 0 }));
     };
 
+    const handlePause = () => {
+      setPlayer((prev) => ({ ...prev, isPlaying: false }));
+    };
+
+    const handlePlay = () => {
+      setPlayer((prev) => ({ ...prev, isPlaying: true }));
+    };
+
     const handleCanPlay = () => {
       console.log("Audio ready to play");
     };
@@ -243,6 +253,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("play", handlePlay);
     audio.addEventListener("canplay", handleCanPlay);
 
     audio.src = audioData.url;
@@ -252,6 +264,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("canplay", handleCanPlay);
     };
   }, [audioData]);
@@ -288,6 +302,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     setCurrentPage("scanner");
     if (restart) {
       startScanner();
+    } else {
+      setScanner((prev) => ({ ...prev, message: "" }));
     }
   };
 

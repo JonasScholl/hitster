@@ -11,7 +11,7 @@ const PlayerPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-md mx-auto">
-        <PlayerHeader onClose={() => goToScanner()} />
+        <PlayerHeader onClose={goToScanner} />
 
         <AudioPlayer
           isPlaying={player.isPlaying}
