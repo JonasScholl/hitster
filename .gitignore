@@ -7,6 +7,8 @@
 *.pdf
 *.p8
 
+.DS_Store
+
 generated
 qr_codes
 __pycache__
