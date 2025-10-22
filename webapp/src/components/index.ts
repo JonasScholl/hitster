@@ -1,12 +1,10 @@
 // Main components
 export { default as App } from '../App';
 export { default as ErrorBoundary } from './ErrorBoundary';
-export { default as GlobalScannerControls } from './GlobalScannerControls';
 
 // Scanner components
 export { default as CameraHelpModal } from './scanner/CameraHelpModal';
 export { default as QRCodeReader } from './scanner/QRCodeReader';
-export { default as ScannerControls } from './scanner/ScannerControls';
 export { default as ScannerInfo } from './scanner/ScannerInfo';
 export { default as ScannerMessage } from './scanner/ScannerMessage';
 export { default as ScannerPage } from './ScannerPage';
