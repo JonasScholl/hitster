@@ -35,7 +35,7 @@ This is a modern DIY solution that generates professional-quality Hitster cards 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/hitster.git
+git clone https://github.com/jonasscholl/hitster.git
 cd hitster
 
 # Install Python dependencies
