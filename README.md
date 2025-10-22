@@ -20,9 +20,8 @@ This is a modern DIY solution that generates professional-quality Hitster cards 
 - **🎵 Multi-Platform Support** — Works with both Spotify and Apple Music
 - **📱 QR Code Scanner** — Scan cards at [hitster.scholl.tech](https://hitster.scholl.tech) and play audio previews instantly
 - **🖨️ Print-Ready PDFs** — Professional duplex printing with cut marks
-- **🎨 Customizable Layout** — Adjust card size, layout, and appearance
-- **📊 Overview Generation** — Create year-based song overviews
-- **🔄 Batch Processing** — Handle large playlists efficiently
+- **🎨 Themes** — Many themes for the printouts available
+- **📊 Overview Generation** — Create year-based song overview to optimize the song distribution
 
 ## 🚀 Quick Start
 
