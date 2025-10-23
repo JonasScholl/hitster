@@ -5,8 +5,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from generator.connectors import resolve_connector
-from generator.generate import generate_cards_pdf, generate_overview_pdf, generate_qr_codes
 from generator.logger import header, section, step, success
+from generator.output import generate_cards_pdf, generate_overview_pdf, generate_qr_codes
 from generator.utils import get_env_var
 
 

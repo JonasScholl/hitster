@@ -56,7 +56,7 @@
     fill: get_card_color(song_index),
     inset: 0.5cm,
     image(
-      "../../generated/qr-codes/" + song.id + ".svg",
+      "../../generated/qr-codes/" + song.id + ".png",
       width: 100%
     )
   )

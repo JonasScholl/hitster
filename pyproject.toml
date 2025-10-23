@@ -19,6 +19,7 @@ requests = "^2.31.0"
 python-dotenv = "^1.1.1"
 pydantic = "^2.12.3"
 rich = "^14.2.0"
+cairosvg = "^2.7.1"
 ruff = "^0.14.1"
 pre-commit = "^4.3.0"
 

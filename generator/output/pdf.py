@@ -1,31 +1,12 @@
-import shutil
 from collections import Counter
-from pathlib import Path
 
 import matplotlib.pyplot as plt
-import qrcode
-import qrcode.image.svg
 import typst
 from matplotlib.backends.backend_pdf import PdfPages
 
 from generator.connectors import Song
 from generator.logger import item
 from generator.utils import get_env_var
-
-
-def generate_qr_codes(songs: list[Song]) -> None:
-    """Generate QR codes for the songs and save them to the generated/qr-codes directory"""
-
-    if Path("generated/qr-codes").is_dir():
-        shutil.rmtree("generated/qr-codes")
-
-    Path("generated/qr-codes").mkdir(parents=True, exist_ok=True)
-
-    for i, song in enumerate(songs, 1):
-        if i % 20 == 0 or i == len(songs):
-            item(f"Generated {i}/{len(songs)} QR codes")
-        image = qrcode.make(song.url, image_factory=qrcode.image.svg.SvgPathImage)
-        image.save(f"generated/qr-codes/{song.id}.svg")
 
 
 def generate_cards_pdf(output_pdf: str) -> None:
@@ -43,6 +24,10 @@ def generate_cards_pdf(output_pdf: str) -> None:
 
 def generate_overview_pdf(songs: list[Song], output_pdf: str) -> None:
     """Generate an overview PDF of the songs by year"""
+
+    if not songs:
+        item("No songs to analyze")
+        return
 
     item("Analyzing song years...")
     year_counts = Counter(song.year for song in songs)

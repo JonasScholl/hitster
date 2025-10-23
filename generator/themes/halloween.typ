@@ -1,19 +1,5 @@
 #let songs = json("../../generated/songs.json")
 
-#let colorize(svg, color, alpha) = {
-  let color_rgba = if color == black {
-    "rgba(0, 0, 0, " + str(alpha) + ")"
-  } else if color == white {
-    "rgba(255, 255, 255, " + str(alpha) + ")"
-  } else if color == rgb("#CCCCCC") {
-    "rgba(204, 204, 204, " + str(alpha) + ")"
-  } else {
-    "rgba(0, 0, 0, " + str(alpha) + ")"  // fallback
-  };
-
-  svg.replace("fill=\"#000000\"", "fill=\"" + color_rgba + "\" ")
-}
-
 //this is a4
 #let page_width = 210mm
 #let page_height = 297mm
@@ -84,8 +70,7 @@
   let bg_color = get_card_color(song_index)
   let text_color = get_text_color(song_index)
 
-  let qr_code = read("../../generated/qr-codes/" + song.id + ".svg")
-  let colorized_qr_code = colorize(qr_code, text_color, 1.0)
+  let qr_code = image("../../generated/qr-codes/" + song.id + ".png", width: card_size - 1cm)
 
   square(
     size: card_size,
@@ -93,7 +78,7 @@
     inset: 0.5cm,
     align(
       center,
-      image.decode(colorized_qr_code, width: card_size - 1cm)
+      qr_code
     )
   )
 }
@@ -110,8 +95,7 @@
   } else {
     "tombstone_0" + str(calc.rem(song_index, 9) + 1) + ".svg"
   }
-  let image_svg = read("../../generator/themes/images/" + image_name)
-  let colorized_image = colorize(image_svg, text_color, 0.5)
+  let image = image("../../generator/themes/images/" + image_name, width: 0.15 * card_size)
 
   square(
     size: card_size,
@@ -131,7 +115,7 @@
         },
         dx: if corner == 0 { -0.025 * card_size } else if corner == 1 { 0.025 * card_size } else { 0mm },
         dy: if corner < 2 { -0.025 * card_size } else { 0.05 * card_size  },
-        image.decode(colorized_image, width: 0.15 * card_size)
+        image
       )
 
       // Main content
