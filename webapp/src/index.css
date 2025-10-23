@@ -19,6 +19,10 @@
     background-color: #dec9e9;
 }
 
+html {
+    @apply bg-gray-900 text-white;
+}
+
 button {
     background: linear-gradient(155deg, #4f46e5 0%, #7c3aed 100%);
     cursor: pointer;

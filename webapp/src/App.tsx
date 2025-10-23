@@ -7,7 +7,7 @@ const AppContent: React.FC = () => {
   const { currentPage } = useAppContext();
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen">
+    <div className="min-h-screen">
       {currentPage === "scanner" ? <ScannerPage /> : <PlayerPage />}
     </div>
   );

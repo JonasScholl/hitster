@@ -27,7 +27,7 @@ const ScannerPage: React.FC = () => {
 
       {!scanner.isScanning && (
         <div className="mt-8 text-center">
-          <Button onClick={startScanner}>Start Scanner</Button>
+          <Button onClick={startScanner}>Scan Card</Button>
         </div>
       )}
 

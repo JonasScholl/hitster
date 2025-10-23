@@ -50,7 +50,7 @@ The built files will be in the `dist` directory.
 
 ## Usage
 
-1. **Start Scanning**: Click "Start Scanner" to begin QR code scanning
+1. **Start Scanning**: Click "Scan Card" to begin QR code scanning
 2. **Scan QR Code**: Point your camera at a QR code containing an Apple Music audio URL
 3. **Play Audio**: The audio player will automatically load and you can control playback
 4. **Manual Entry**: If scanning fails, you can manually enter an audio URL in the help section
