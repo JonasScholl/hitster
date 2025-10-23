@@ -18,7 +18,7 @@ from generator.utils import calculate_relative_luminance, get_max_workers, updat
 def _qr_code_image_generator(theme: Theme) -> Iterator[Path]:
     """Generator that yields available images for the given theme in a cycling pattern"""
 
-    image_paths = get_image_paths(theme)
+    image_paths = get_image_paths(theme, purpose="qr")
     background_color_generator = card_background_color_generator(theme)
 
     index = 0

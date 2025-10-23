@@ -33,7 +33,7 @@ def get_rgb_colors(theme: Theme) -> list[tuple[int, int, int]]:
             return [(255, 255, 255)]
 
 
-def get_image_paths(theme: Theme) -> list[Path]:
+def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
     """Get the paths of QR code images for the given theme"""
 
     images_dir = Path("generator/themes/images")
@@ -41,6 +41,8 @@ def get_image_paths(theme: Theme) -> list[Path]:
         raise FileNotFoundError(f"Images directory {images_dir} not found")
 
     if theme == Theme.HALLOWEEN:
+        if purpose == "qr":
+            return sorted(images_dir.glob("pumpkin_*.svg"))
         return sorted(images_dir.glob("bat_*.svg")) + sorted(images_dir.glob("tombstone_*.svg"))
 
     return []

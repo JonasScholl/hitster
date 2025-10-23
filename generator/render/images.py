@@ -13,10 +13,10 @@ from generator.themes import Theme, get_image_paths, get_rgb_colors
 from generator.utils import calculate_relative_luminance, get_max_workers, update_progress_bar
 
 
-def generate_qr_codes_images(theme: Theme) -> None:
-    """Generate QR code images for the songs and save them to the generated/qr-codes-images directory"""
+def generate_decoration_images(theme: Theme) -> None:
+    """Generate decoration images for the songs and save them to the generated/decoration-images directory"""
 
-    image_paths = get_image_paths(theme)
+    image_paths = get_image_paths(theme, purpose="decoration")
     colors = get_rgb_colors(theme)
 
     if not image_paths:

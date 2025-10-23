@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from generator.connectors import resolve_connector
 from generator.logger import header, section, step, success
 from generator.render import generate_cards_pdf, generate_overview_pdf, generate_qr_codes
-from generator.render.images import generate_qr_codes_images
+from generator.render.images import generate_decoration_images
 from generator.themes import Theme
 from generator.utils import get_env_var
 
@@ -42,8 +42,12 @@ def main() -> None:
     success("Songs data saved to generated/songs.json")
 
     section("Generating Assets")
+
+    step("Generating decoration images...")
+    generate_decoration_images(theme)
+    success("Decoration images generated")
+
     step("Creating QR codes...")
-    generate_qr_codes_images(theme)
     generate_qr_codes(theme, songs)
     success("QR codes generated")
 
