@@ -1,11 +1,60 @@
 import io
+import sys
 import xml.etree.ElementTree as ET
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
+from time import time
 
 import cairosvg
 from PIL import Image
 
-from generator.utils import calculate_relative_luminance
+from generator.logger import item
+from generator.themes import Theme, get_image_paths, get_rgb_colors
+from generator.utils import calculate_relative_luminance, get_max_workers, update_progress_bar
+
+
+def generate_qr_codes_images(theme: Theme) -> None:
+    """Generate QR code images for the songs and save them to the generated/qr-codes-images directory"""
+
+    image_paths = get_image_paths(theme)
+    colors = get_rgb_colors(theme)
+
+    if not image_paths:
+        return
+
+    max_workers = get_max_workers(min_workers=len(image_paths))
+    qr_args = [(image_path, color) for image_path in image_paths for color in colors]
+
+    completed_count = 0
+    total_images = len(qr_args)
+    errors = []
+    start_time = time()
+
+    item(f"Generating {len(image_paths)} embedded QR code images using {max_workers} parallel workers")
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        future_to_image_path = {executor.submit(process_embedded_image, *args): args for args in qr_args}
+        for future in as_completed(future_to_image_path):
+            try:
+                future.result()
+                completed_count += 1
+                update_progress_bar(
+                    completed_count, total_images, indent=4, prefix="QR Code Images", start_time=start_time
+                )
+            except Exception as e:
+                image_path = future_to_image_path[future]
+                error_msg = f"Error processing image {image_path}: {e}"
+                item(error_msg)
+                errors.append(error_msg)
+                update_progress_bar(
+                    completed_count, total_images, indent=4, prefix="QR Code Images", start_time=start_time
+                )
+                sys.exit(1)
+
+    if errors:
+        item(f"Completed with {len(errors)} errors out of {total_images} images")
+    else:
+        item(f"Successfully generated all {total_images} embedded QR code images")
 
 
 def process_embedded_image(image_path: Path, background_color: tuple[int, int, int], outline=False) -> Path:

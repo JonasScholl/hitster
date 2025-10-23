@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from generator.connectors import resolve_connector
 from generator.logger import header, section, step, success
 from generator.render import generate_cards_pdf, generate_overview_pdf, generate_qr_codes
+from generator.render.images import generate_qr_codes_images
+from generator.themes import Theme
 from generator.utils import get_env_var
 
 
@@ -16,6 +18,8 @@ def main() -> None:
 
     random.seed("hitster")
     load_dotenv()
+
+    theme = Theme(get_env_var("THEME", Theme.BLACK_WHITE))
 
     header("🎵 Hitster Card Generator")
 
@@ -39,7 +43,8 @@ def main() -> None:
 
     section("Generating Assets")
     step("Creating QR codes...")
-    generate_qr_codes(songs)
+    generate_qr_codes_images(theme)
+    generate_qr_codes(theme, songs)
     success("QR codes generated")
 
     step("Building cards PDF...")

@@ -12,6 +12,11 @@ def get_env_var(key: str, default: str | None = None) -> str:
     return value
 
 
+def get_max_workers(min_workers=1) -> int:
+    """Get the maximum number of workers to use for parallel processing"""
+    return min(int(get_env_var("MAX_WORKERS", "8")), min_workers, os.cpu_count() or 1)
+
+
 def calculate_relative_luminance(rgb: tuple[int, int, int]) -> float:
     """Calculate relative luminance of an RGB color (0-1 scale)"""
     r, g, b = rgb

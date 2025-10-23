@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from enum import StrEnum
 from pathlib import Path
 
@@ -43,3 +44,12 @@ def get_image_paths(theme: Theme) -> list[Path]:
         return sorted(images_dir.glob("bat_*.svg")) + sorted(images_dir.glob("tombstone_*.svg"))
 
     return []
+
+
+def card_background_color_generator(theme: Theme) -> Iterator[tuple[int, int, int]]:
+    background_colors = get_rgb_colors(theme)
+
+    index = 0
+    while True:
+        yield background_colors[index % len(background_colors)]
+        index += 1
