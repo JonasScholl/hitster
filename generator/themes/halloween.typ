@@ -66,6 +66,29 @@
   }
 }
 
+// Function to convert RGB color to filename format based on song index
+#let rgb_to_filename(song_index) = {
+  let palette_size = color_palette.len()
+  let actual_index = if song_index < palette_size {
+    song_index
+  } else {
+    calc.rem(song_index, palette_size)
+  }
+
+  // Map palette indices to RGB values found in generated images
+  if actual_index == 0 {
+    "38_42_32"  // #262A20
+  } else if actual_index == 1 {
+    "67_40_26"  // #43281A
+  } else if actual_index == 2 {
+    "63_92_93"  // #3F5C5D
+  } else if actual_index == 3 {
+    "182_87_24" // #B65718
+  } else {
+    "159_188_191" // #9FBCBF
+  }
+}
+
 #let qr_front_side(song, song_index) = {
   let bg_color = get_card_color(song_index)
   let text_color = get_text_color(song_index)
@@ -90,12 +113,13 @@
   // Random image and corner selection based on song index
   let corner = calc.rem(song_index, 4)  // 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right
   let is_top_corner = corner <= 1
+  let rgb_suffix = rgb_to_filename(song_index)
   let image_name = if is_top_corner {
-    "bat_0" + str(calc.rem(song_index, 9) + 1) + ".svg"
+    "bat_0" + str(calc.rem(song_index, 9) + 1) + "_" + rgb_suffix + ".png"
   } else {
-    "tombstone_0" + str(calc.rem(song_index, 9) + 1) + ".svg"
+    "tombstone_0" + str(calc.rem(song_index, 9) + 1) + "_" + rgb_suffix + ".png"
   }
-  let image = image("../../generator/themes/images/" + image_name, width: 0.15 * card_size)
+  let image = image("../../generated/images/" + image_name, width: 0.15 * card_size)
 
   square(
     size: card_size,
