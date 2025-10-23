@@ -40,6 +40,20 @@ def process_embedded_image(image_path: Path, background_color: tuple[int, int, i
                 elem.attrib["fill"] = get_secondary_hex_color(background_color)
 
         if outline:
+            stroke_width = 750
+
+            # Expand viewBox to accommodate the stroke width
+            if "viewBox" in root.attrib:
+                viewbox_parts = root.attrib["viewBox"].split()
+                if len(viewbox_parts) == 4:
+                    x, y, width, height = map(float, viewbox_parts)
+                    padding = stroke_width / 10
+                    new_x = x - padding
+                    new_y = y - padding
+                    new_width = width + 2 * padding
+                    new_height = height + 2 * padding
+                    root.attrib["viewBox"] = f"{new_x} {new_y} {new_width} {new_height}"
+
             # Create outer stroke effect by duplicating paths with stroke-only
             # Find all path elements and create stroke versions
             stroke_paths = []
@@ -48,7 +62,7 @@ def process_embedded_image(image_path: Path, background_color: tuple[int, int, i
                     stroke_path = ET.Element("path")
                     stroke_path.attrib.update(elem.attrib)
                     stroke_path.attrib["stroke"] = rgb_to_hex(background_color)
-                    stroke_path.attrib["stroke-width"] = "750"
+                    stroke_path.attrib["stroke-width"] = str(stroke_width)
                     stroke_path.attrib["stroke-linejoin"] = "round"
                     stroke_path.attrib["stroke-linecap"] = "round"
                     stroke_path.attrib["fill"] = "none"
