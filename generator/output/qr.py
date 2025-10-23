@@ -1,5 +1,4 @@
 import os
-import shutil
 from collections.abc import Iterator
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
@@ -11,6 +10,7 @@ from qrcode.image.styles.moduledrawers.pil import CircleModuleDrawer
 
 from generator.connectors import Song
 from generator.logger import item
+from generator.output.images import process_embedded_image
 from generator.themes import Theme, get_image_paths, get_rgb_colors
 from generator.utils import calculate_relative_luminance, get_env_var
 
@@ -19,10 +19,16 @@ def _qr_code_image_generator(theme: Theme) -> Iterator[Path]:
     """Generator that yields available images for the given theme in a cycling pattern"""
 
     image_paths = get_image_paths(theme)
+    background_color_generator = _qr_code_background_color_generator(theme)
 
     index = 0
     while True:
-        yield image_paths[index % len(image_paths)] if image_paths else None
+        if image_paths:
+            base_image = image_paths[index % len(image_paths)]
+            background_color = next(background_color_generator)
+            yield process_embedded_image(base_image, background_color)
+        else:
+            yield None
         index += 1
 
 
@@ -82,9 +88,6 @@ def generate_qr_codes(songs: list[Song]) -> None:
     if not songs:
         item("No songs to process")
         return
-
-    if Path("generated/qr-codes").is_dir():
-        shutil.rmtree("generated/qr-codes")
 
     Path("generated/qr-codes").mkdir(parents=True, exist_ok=True)
 

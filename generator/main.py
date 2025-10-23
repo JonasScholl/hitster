@@ -1,5 +1,6 @@
 import json
 import random
+import shutil
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -26,6 +27,8 @@ def main() -> None:
     songs = connector.get_playlist_songs(get_env_var("PLAYLIST_ID"))
     success(f"Retrieved {len(songs)} songs")
 
+    if Path("generated").is_dir():
+        shutil.rmtree("generated")
     Path("generated").mkdir(parents=True, exist_ok=True)
 
     section("Processing Data")
