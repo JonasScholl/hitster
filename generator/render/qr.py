@@ -68,14 +68,20 @@ def _generate_qr_code(
     qr.add_data(song.qr_code_value)
     qr.make(fit=True)
 
-    qr.make_image(
+    qr_image = qr.make_image(
         embeded_image_path=str(image_path.absolute()) if image_path else None,
         module_drawer=CircleModuleDrawer(),
         color_mask=SolidFillColorMask(
             back_color=background_color,
             front_color=fill_color,
         ),
-    ).save(f"{output_dir}/{song.id}.png")
+    )
+
+    qr_image.save(
+        f"{output_dir}/{song.id}.png",
+        format="PNG",
+        compress_level=0,
+    )
 
 
 def generate_qr_codes(theme: Theme, songs: list[Song]) -> None:
