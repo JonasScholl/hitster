@@ -9,7 +9,7 @@ import React, {
 import { QR_CODE_CONFIG, SCANNER_MESSAGES } from "../constants";
 import { AudioData, PageType, PlayerState, ScannerState } from "../types";
 import {
-  isItunesAudioUrl,
+  isAppleMusicShortUrl,
   isValidUrl,
   validateAudioUrl,
 } from "../utils/audioValidation";
@@ -136,10 +136,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
-    if (isItunesAudioUrl(decodedText)) {
+    if (isAppleMusicShortUrl(decodedText)) {
       setScanner((prev) => ({
         ...prev,
-        message: SCANNER_MESSAGES.ITUNES_DETECTED,
+        message: SCANNER_MESSAGES.APPLE_MUSIC_SHORT_URL_DETECTED,
       }));
       loadAudio(decodedText);
     } else if (decodedText.includes("http")) {
@@ -205,7 +205,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
-    if (!isItunesAudioUrl(url)) {
+    if (!isAppleMusicShortUrl(url)) {
       setScanner((prev) => ({
         ...prev,
         message: SCANNER_MESSAGES.APPLE_MUSIC_ONLY,

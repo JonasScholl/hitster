@@ -1,4 +1,4 @@
-import { ALLOWED_HOSTS, AUDIO_VALIDATION_TIMEOUT } from '../constants';
+import { AUDIO_VALIDATION_TIMEOUT } from '../constants';
 
 export const isValidUrl = (url: string): boolean => {
   try {
@@ -17,27 +17,9 @@ export const isHttpsUrl = (url: string): boolean => {
   }
 };
 
-export const isAppleMusicUrl = (url: string): boolean => {
-  try {
-    const parsedUrl = new URL(url);
-    const isAllowedHost = ALLOWED_HOSTS.appleMusic.some(host =>
-      parsedUrl.host.endsWith(host)
-    );
-
-    const hasAudioPreviewPath =
-      parsedUrl.pathname.includes("itunes-assets/AudioPreview") ||
-      parsedUrl.pathname.endsWith(".aac.p.m4a");
-
-    return isAllowedHost && hasAudioPreviewPath;
-  } catch {
-    return false;
-  }
-};
-
-export const isItunesAudioUrl = (url: string): boolean => {
-  return url.includes("itunes-assets/AudioPreview") ||
-         url.includes(".aac.p.m4a") ||
-         (isValidUrl(url) && new URL(url).host === "audio-ssl.itunes.apple.com");
+export const isAppleMusicShortUrl = (url: string): boolean => {
+  const path = new URL(url).pathname;
+  return path.startsWith("/qr/am/")
 };
 
 export const validateAudioUrl = (url: string): Promise<boolean> => {

@@ -63,7 +63,7 @@ def _generate_qr_code(args: tuple[Song, Path, tuple[int, int, int], tuple[int, i
         mask_pattern=None,
     )
 
-    qr.add_data(song.url)
+    qr.add_data(song.qr_code_value)
     qr.make(fit=True)
 
     qr.make_image(

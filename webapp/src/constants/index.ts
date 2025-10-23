@@ -1,21 +1,9 @@
-import { AllowedHosts, QRCodeConfig } from '../types';
+import { QRCodeConfig } from '../types';
 
 export const QR_CODE_CONFIG: QRCodeConfig = {
   fps: 10,
   qrbox: { width: 250, height: 250 },
   aspectRatio: 1.0,
-};
-
-export const ALLOWED_HOSTS: AllowedHosts = {
-  appleMusic: [
-    "audio-ssl.itunes.apple.com",
-    "itunes.apple.com",
-    "itunes-assets.apple.com",
-  ],
-  spotify: [
-    "open.spotify.com",
-    "p.scdn.co",
-  ],
 };
 
 export const AUDIO_VALIDATION_TIMEOUT = 5000;
@@ -24,7 +12,7 @@ export const SCANNER_MESSAGES = {
   CAMERA_NOT_SUPPORTED: "Camera not supported on this device/browser",
   INVALID_URL: "This doesn't appear to be a valid URL.",
   INVALID_AUDIO_URL: "This doesn't appear to be an audio URL.",
-  ITUNES_DETECTED: "iTunes audio URL detected! Validating...",
+  APPLE_MUSIC_SHORT_URL_DETECTED: "Apple Music short URL detected! Validating...",
   URL_DETECTED: "URL detected. Checking if it's an audio file...",
   VALIDATING: "Validating audio URL...",
   INVALID_AUDIO: "Invalid or inaccessible audio URL. Please try a different QR code.",

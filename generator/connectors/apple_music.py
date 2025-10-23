@@ -4,7 +4,7 @@ from pathlib import Path
 import jwt
 import requests
 
-from generator.connectors.interfaces import Connector, Song
+from generator.connectors.interfaces import Connector, Song, Source
 from generator.logger import error, skip
 from generator.utils import get_env_var
 
@@ -67,6 +67,7 @@ class AppleMusicConnector(Connector):
                                 artists=[artists],
                                 year=year,
                                 url=preview_url,
+                                source=Source.APPLE_MUSIC,
                             )
                         )
 

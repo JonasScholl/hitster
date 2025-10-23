@@ -1,6 +1,6 @@
 import spotipy
 
-from generator.connectors.interfaces import Connector, Song
+from generator.connectors.interfaces import Connector, Song, Source
 from generator.logger import skip
 from generator.utils import get_env_var
 
@@ -60,6 +60,7 @@ class SpotifyConnector(Connector):
                             artists=[artist.get("name", "Unknown") for artist in artists],
                             year=year,
                             url=url,
+                            source=Source.SPOTIFY,
                         )
                     )
 

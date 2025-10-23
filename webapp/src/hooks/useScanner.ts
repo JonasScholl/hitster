@@ -2,7 +2,8 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { useCallback, useRef, useState } from 'react';
 import { QR_CODE_CONFIG, SCANNER_MESSAGES } from '../constants';
 import { ScannerState } from '../types';
-import { isItunesAudioUrl, isValidUrl, validateAudioUrl } from '../utils/audioValidation';
+import { getAppleMusicSongId } from '../utils/appleMusic';
+import { isAppleMusicShortUrl, isValidUrl, validateAudioUrl } from '../utils/audioValidation';
 import { checkCameraPermission, createCameraError } from '../utils/cameraUtils';
 
 interface UseScannerProps {
@@ -87,9 +88,12 @@ export const useScanner = ({ onAudioDetected }: UseScannerProps) => {
       return;
     }
 
-    if (isItunesAudioUrl(decodedText)) {
-      updateState({ message: SCANNER_MESSAGES.ITUNES_DETECTED });
-      loadAudio(decodedText);
+    if (isAppleMusicShortUrl(decodedText)) {
+      updateState({ message: SCANNER_MESSAGES.APPLE_MUSIC_SHORT_URL_DETECTED });
+      getAppleMusicSongId(decodedText).then(url => loadAudio(url)).catch(error => {
+        console.error("Error fetching Apple Music song:", error);
+        updateState({ message: SCANNER_MESSAGES.ERROR_LOADING });
+      });
     } else if (decodedText.includes("http")) {
       updateState({ message: SCANNER_MESSAGES.URL_DETECTED });
       loadAudio(decodedText);
@@ -142,7 +146,7 @@ export const useScanner = ({ onAudioDetected }: UseScannerProps) => {
     }
 
     // For manual entry, we'll be more restrictive
-    if (!isItunesAudioUrl(url)) {
+    if (!isAppleMusicShortUrl(url)) {
       updateState({ message: SCANNER_MESSAGES.APPLE_MUSIC_ONLY });
       return;
     }
