@@ -1,4 +1,5 @@
 import os
+import time
 from collections.abc import Iterator
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
@@ -12,7 +13,7 @@ from generator.connectors import Song
 from generator.logger import item
 from generator.output.images import process_embedded_image
 from generator.themes import Theme, get_image_paths, get_rgb_colors
-from generator.utils import calculate_relative_luminance, get_env_var
+from generator.utils import calculate_relative_luminance, get_env_var, update_progress_bar
 
 
 def _qr_code_image_generator(theme: Theme) -> Iterator[Path]:
@@ -106,33 +107,26 @@ def generate_qr_codes(songs: list[Song]) -> None:
 
     item(f"Generating {len(songs)} QR codes using {max_workers} parallel workers")
 
-    # Prepare arguments for parallel processing
-
     completed_count = 0
     total_songs = len(songs)
     errors = []
+    start_time = time.time()
 
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all tasks
         future_to_song = {executor.submit(_generate_qr_code, args): args[0] for args in qr_args}
-
-        # Process completed tasks and update progress
         for future in as_completed(future_to_song):
             try:
                 future.result()  # This will raise any exception that occurred
                 completed_count += 1
-
-                # Update progress every 20 completions or on final completion
-                if completed_count % 20 == 0 or completed_count == total_songs:
-                    item(f"Generated {completed_count}/{total_songs} QR codes")
+                update_progress_bar(completed_count, total_songs, indent=4, prefix="QR Codes", start_time=start_time)
 
             except Exception as e:
                 song = future_to_song[future]
                 error_msg = f"Error generating QR code for song {song.id}: {e}"
                 item(error_msg)
                 errors.append(error_msg)
+                update_progress_bar(completed_count, total_songs, indent=4, prefix="QR Codes", start_time=start_time)
 
-    # Report any errors that occurred
     if errors:
         item(f"Completed with {len(errors)} errors out of {total_songs} songs")
     else:
