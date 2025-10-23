@@ -11,7 +11,7 @@ from qrcode.image.styles.moduledrawers.pil import CircleModuleDrawer
 
 from generator.connectors import Song
 from generator.logger import item
-from generator.output.images import process_embedded_image
+from generator.render.images import process_embedded_image
 from generator.themes import Theme, get_image_paths, get_rgb_colors
 from generator.utils import calculate_relative_luminance, get_env_var, update_progress_bar
 
