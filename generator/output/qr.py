@@ -26,7 +26,7 @@ def _qr_code_image_generator(theme: Theme) -> Iterator[Path]:
         if image_paths:
             base_image = image_paths[index % len(image_paths)]
             background_color = next(background_color_generator)
-            yield process_embedded_image(base_image, background_color)
+            yield process_embedded_image(base_image, background_color, outline=True)
         else:
             yield None
         index += 1

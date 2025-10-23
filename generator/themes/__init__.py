@@ -40,6 +40,6 @@ def get_image_paths(theme: Theme) -> list[Path]:
         raise FileNotFoundError(f"Images directory {images_dir} not found")
 
     if theme == Theme.HALLOWEEN:
-        return sorted(images_dir.glob("bat_*.png")) + sorted(images_dir.glob("tombstone_*.png"))
+        return sorted(images_dir.glob("bat_*.svg")) + sorted(images_dir.glob("tombstone_*.svg"))
 
     return []

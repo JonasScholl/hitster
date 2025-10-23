@@ -1,17 +1,22 @@
+import io
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
+import cairosvg
 from PIL import Image
 
+from generator.utils import calculate_relative_luminance
 
-def process_embedded_image(image_path: Path, background_color: tuple[int, int, int]) -> Path:
-    """Process an embedded image to tint it with a variation of the background color
+
+def process_embedded_image(image_path: Path, background_color: tuple[int, int, int], outline=False) -> Path:
+    """Process an embedded SVG image to tint it with a variation of the background color and add an outline
 
     Args:
-        image_path: Path to the original PNG image
+        image_path: Path to the original SVG image
         background_color: RGB tuple of the background color
 
     Returns:
-        Path to the processed image file
+        Path to the processed PNG image file
     """
     if not image_path or not image_path.exists():
         return image_path
@@ -20,41 +25,80 @@ def process_embedded_image(image_path: Path, background_color: tuple[int, int, i
 
     processed_path = (
         Path("generated/images")
-        / f"{image_path.stem}_{background_color[0]}_{background_color[1]}_{background_color[2]}.png"
+        / f"{image_path.stem}_{background_color[0]}_{background_color[1]}_{background_color[2]}{'_outline' if outline else ''}.png"
     )
     if processed_path.exists():
         return processed_path
 
     try:
-        with Image.open(image_path) as original_img:
+        svg_content = image_path.read_text(encoding="utf-8")
+        root = ET.fromstring(svg_content)
+
+        # Find and modify the fill color in the SVG
+        for elem in root.iter():
+            if "fill" in elem.attrib and elem.attrib["fill"] == "#000000":
+                elem.attrib["fill"] = get_secondary_hex_color(background_color)
+
+        if outline:
+            # Create outer stroke effect by duplicating paths with stroke-only
+            # Find all path elements and create stroke versions
+            stroke_paths = []
+            for elem in root.iter():
+                if elem.tag.endswith("path"):
+                    stroke_path = ET.Element("path")
+                    stroke_path.attrib.update(elem.attrib)
+                    stroke_path.attrib["stroke"] = rgb_to_hex(background_color)
+                    stroke_path.attrib["stroke-width"] = "750"
+                    stroke_path.attrib["stroke-linejoin"] = "round"
+                    stroke_path.attrib["stroke-linecap"] = "round"
+                    stroke_path.attrib["fill"] = "none"
+                    stroke_paths.append(stroke_path)
+
+            if stroke_paths:
+                main_group = None
+                for elem in root.iter():
+                    if elem.tag.endswith("g") and "transform" in elem.attrib:
+                        main_group = elem
+                        break
+
+                if main_group is not None:
+                    for i, stroke_path in enumerate(stroke_paths):
+                        main_group.insert(i, stroke_path)
+
+        modified_svg = ET.tostring(root, encoding="unicode")
+        png_data = cairosvg.svg2png(bytestring=modified_svg.encode("utf-8"))
+
+        with Image.open(io.BytesIO(png_data)) as original_img:
             img_rgba = original_img.convert("RGBA") if original_img.mode != "RGBA" else original_img
-            processed_img = Image.new("RGBA", img_rgba.size, (0, 0, 0, 0))
-
-            data = img_rgba.getdata()
-            new_data = []
-
-            for item in data:
-                r, g, b, a = item
-
-                if a > 0:
-                    if r == 0 and g == 0 and b == 0:
-                        new_r = max(0, background_color[0] - 50)
-                        new_g = max(0, background_color[1] - 50)
-                        new_b = max(0, background_color[2] - 50)
-                    else:
-                        new_r = int((r + background_color[0]) / 2)
-                        new_g = int((g + background_color[1]) / 2)
-                        new_b = int((b + background_color[2]) / 2)
-
-                    new_data.append((new_r, new_g, new_b, a))
-                else:
-                    new_data.append(item)
-
-            processed_img.putdata(new_data)
-            processed_img.save(processed_path, "PNG")
+            img_rgba.save(processed_path, "PNG")
 
         return processed_path
 
     except Exception as e:
-        item(f"Warning: Failed to process image {image_path}: {e}")
+        print(f"Warning: Failed to process image {image_path}: {e}")
         return image_path
+
+
+def get_secondary_hex_color(color: tuple[int, int, int]) -> str:
+    """Get a complementary color for the fill - darker for light colors, lighter for dark colors"""
+    luminance = calculate_relative_luminance(color)
+
+    # For dark colors (luminance < 0.179): make lighter
+    # For light colors (luminance >= 0.179): make darker
+    if luminance < 0.179:
+        factor = 1.0 + (0.5 - luminance) * 0.8
+        base_addition = max(0, 15 - int(luminance * 50))
+        new_r = int(min(255, color[0] * factor + base_addition))
+        new_g = int(min(255, color[1] * factor + base_addition))
+        new_b = int(min(255, color[2] * factor + base_addition))
+    else:
+        factor = 1.0 - (luminance - 0.5) * 5
+        new_r = int(max(0, color[0] * factor))
+        new_g = int(max(0, color[1] * factor))
+        new_b = int(max(0, color[2] * factor))
+
+    return rgb_to_hex((new_r, new_g, new_b))
+
+
+def rgb_to_hex(color: tuple[int, int, int]) -> str:
+    return f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}"
