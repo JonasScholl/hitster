@@ -55,9 +55,9 @@
 #let get_text_color(song_index) = {
   let palette_size = color_palette.len()
   if song_index < palette_size {
-    // Dark colors (indices 0, 1, 2) use light gray text (80% white), light colors (indices 3, 4) use black text
-    if song_index <= 2 {
-      rgb("#CCCCCC")  // Light gray instead of pure white
+    // Dark colors (indices 0, 1, 2, 3) use light gray text (80% white), light colors (indices 4) use black text
+    if song_index <= 3 {
+      rgb("#F2F2F2")  // Light gray instead of pure white
     } else {
       black
     }
@@ -97,7 +97,7 @@
 
   square(
     size: card_size,
-    fill: bg_color,  // Use the same background color as the text side
+    fill: bg_color,
     inset: 0.5cm,
     align(
       center,
