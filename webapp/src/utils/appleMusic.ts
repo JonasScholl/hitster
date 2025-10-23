@@ -1,4 +1,4 @@
-export const getAppleMusicSongId = async (url: string): Promise<string> => {
+export const getAppleMusicSongUrl = async (url: string): Promise<string> => {
   const path = new URL(url).pathname;
   const songId = path.split("/qr/am/").pop();
 

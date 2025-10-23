@@ -1,6 +1,7 @@
 import { Html5Qrcode } from "html5-qrcode";
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -8,6 +9,7 @@ import React, {
 } from "react";
 import { QR_CODE_CONFIG, SCANNER_MESSAGES } from "../constants";
 import { AudioData, PageType, PlayerState, ScannerState } from "../types";
+import { getAppleMusicSongUrl } from "../utils/appleMusic";
 import {
   isAppleMusicShortUrl,
   isValidUrl,
@@ -44,7 +46,6 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Simple state
   const [currentPage, setCurrentPage] = useState<PageType>("scanner");
   const [audioData, setAudioData] = useState<AudioData | null>(null);
   const [scanner, setScanner] = useState<ScannerState>({
@@ -74,7 +75,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
-  const startScanner = async () => {
+  const startScanner = useCallback(async () => {
     try {
       setScanner((prev) => ({ ...prev, showCameraHelp: false, message: "" }));
 
@@ -94,7 +95,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
           { facingMode: "environment" },
           QR_CODE_CONFIG,
           (decodedText) => handleScanSuccess(decodedText),
-          (errorMessage) => console.error("QR scan error:", errorMessage)
+          (_errorMessage) => {}
         );
 
         setScanner((prev) => ({
@@ -107,9 +108,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Error starting scanner:", err);
       showCameraError(err as Error);
     }
-  };
+  }, [setScanner, showCameraError]);
 
-  const stopScanner = async () => {
+  const stopScanner = useCallback(async () => {
     if (scannerRef.current) {
       try {
         await scannerRef.current.stop();
@@ -123,69 +124,90 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error stopping scanner:", err);
       }
     }
-  };
+  }, [setScanner]);
 
-  const handleScanSuccess = (decodedText: string) => {
-    console.log("QR Code scanned:", decodedText);
-
-    if (!isValidUrl(decodedText)) {
-      setScanner((prev) => ({
-        ...prev,
-        message: `Scanned: ${decodedText}\n${SCANNER_MESSAGES.INVALID_URL}`,
-      }));
-      return;
-    }
-
-    if (isAppleMusicShortUrl(decodedText)) {
-      setScanner((prev) => ({
-        ...prev,
-        message: SCANNER_MESSAGES.APPLE_MUSIC_SHORT_URL_DETECTED,
-      }));
-      loadAudio(decodedText);
-    } else if (decodedText.includes("http")) {
-      setScanner((prev) => ({
-        ...prev,
-        message: SCANNER_MESSAGES.URL_DETECTED,
-      }));
-      loadAudio(decodedText);
-    } else {
-      setScanner((prev) => ({
-        ...prev,
-        message: `Scanned: ${decodedText}\n${SCANNER_MESSAGES.INVALID_AUDIO_URL}`,
-      }));
-    }
-  };
-
-  const loadAudio = async (url: string) => {
-    try {
-      await stopScanner();
-      setScanner((prev) => ({ ...prev, message: SCANNER_MESSAGES.VALIDATING }));
-
-      const isValidAudio = await validateAudioUrl(url);
-      if (!isValidAudio) {
+  const loadAudio = useCallback(
+    async (url: string) => {
+      try {
+        await stopScanner();
         setScanner((prev) => ({
           ...prev,
-          message: SCANNER_MESSAGES.INVALID_AUDIO,
+          message: SCANNER_MESSAGES.VALIDATING,
+        }));
+
+        const isValidAudio = await validateAudioUrl(url);
+        if (!isValidAudio) {
+          setScanner((prev) => ({
+            ...prev,
+            message: SCANNER_MESSAGES.INVALID_AUDIO,
+          }));
+          setTimeout(
+            () => setScanner((prev) => ({ ...prev, message: "" })),
+            3000
+          );
+          return;
+        }
+
+        goToPlayer(url);
+      } catch (err) {
+        console.error("Error loading audio:", err);
+        setScanner((prev) => ({
+          ...prev,
+          message: SCANNER_MESSAGES.ERROR_LOADING,
         }));
         setTimeout(
           () => setScanner((prev) => ({ ...prev, message: "" })),
           3000
         );
+      }
+    },
+    [stopScanner, setScanner]
+  );
+
+  const handleScanSuccess = useCallback(
+    async (decodedText: string) => {
+      console.log("QR Code scanned:", decodedText);
+
+      if (!isValidUrl(decodedText)) {
+        setScanner((prev) => ({
+          ...prev,
+          message: `Scanned: ${decodedText}\n${SCANNER_MESSAGES.INVALID_URL}`,
+        }));
         return;
       }
 
-      goToPlayer(url);
-    } catch (err) {
-      console.error("Error loading audio:", err);
-      setScanner((prev) => ({
-        ...prev,
-        message: SCANNER_MESSAGES.ERROR_LOADING,
-      }));
-      setTimeout(() => setScanner((prev) => ({ ...prev, message: "" })), 3000);
-    }
-  };
+      if (isAppleMusicShortUrl(decodedText)) {
+        setScanner((prev) => ({
+          ...prev,
+          message: SCANNER_MESSAGES.APPLE_MUSIC_SHORT_URL_DETECTED,
+        }));
+        try {
+          const url = await getAppleMusicSongUrl(decodedText);
+          loadAudio(url);
+        } catch (error) {
+          console.error("Error fetching Apple Music song:", error);
+          setScanner((prev) => ({
+            ...prev,
+            message: SCANNER_MESSAGES.ERROR_LOADING,
+          }));
+        }
+      } else if (decodedText.includes("http")) {
+        setScanner((prev) => ({
+          ...prev,
+          message: SCANNER_MESSAGES.URL_DETECTED,
+        }));
+        loadAudio(decodedText);
+      } else {
+        setScanner((prev) => ({
+          ...prev,
+          message: `Scanned: ${decodedText}\n${SCANNER_MESSAGES.INVALID_AUDIO_URL}`,
+        }));
+      }
+    },
+    [setScanner, loadAudio]
+  );
 
-  const loadManualUrl = () => {
+  const loadManualUrl = useCallback(() => {
     const url = scanner.manualUrl.trim();
     if (!url) {
       setScanner((prev) => ({ ...prev, message: SCANNER_MESSAGES.ENTER_URL }));
@@ -215,13 +237,61 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
     setScanner((prev) => ({ ...prev, message: "Loading audio from URL..." }));
     loadAudio(url);
-  };
+  }, [setScanner, loadAudio]);
 
-  const setManualUrl = (url: string) => {
-    setScanner((prev) => ({ ...prev, manualUrl: url }));
-  };
+  const setManualUrl = useCallback(
+    (url: string) => {
+      setScanner((prev) => ({ ...prev, manualUrl: url }));
+    },
+    [setScanner]
+  );
 
-  // Simple player functions
+  const togglePlayPause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (player.isPlaying) {
+      audio.pause();
+      setPlayer((prev) => ({ ...prev, isPlaying: false }));
+    } else {
+      audio.play();
+      setPlayer((prev) => ({ ...prev, isPlaying: true }));
+    }
+  }, [player.isPlaying, setPlayer]);
+
+  const seekTo = useCallback(
+    (time: number) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      audio.currentTime = time;
+      setPlayer((prev) => ({ ...prev, currentTime: time }));
+    },
+    [setPlayer]
+  );
+
+  // Simple navigation
+  const goToPlayer = useCallback(
+    (url: string) => {
+      setAudioData({ url });
+      setCurrentPage("player");
+    },
+    [setAudioData, setCurrentPage]
+  );
+
+  const goToScanner = useCallback(
+    (restart = false) => {
+      setAudioData(null);
+      setPlayer({ isPlaying: false, currentTime: 0, duration: 0 });
+      setCurrentPage("scanner");
+      if (restart) {
+        startScanner();
+      } else {
+        setScanner((prev) => ({ ...prev, message: "" }));
+      }
+    },
+    [setAudioData, setCurrentPage, startScanner, setScanner]
+  );
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !audioData) return;
@@ -269,43 +339,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       audio.removeEventListener("canplay", handleCanPlay);
     };
   }, [audioData]);
-
-  const togglePlayPause = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (player.isPlaying) {
-      audio.pause();
-      setPlayer((prev) => ({ ...prev, isPlaying: false }));
-    } else {
-      audio.play();
-      setPlayer((prev) => ({ ...prev, isPlaying: true }));
-    }
-  };
-
-  const seekTo = (time: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = time;
-    setPlayer((prev) => ({ ...prev, currentTime: time }));
-  };
-
-  // Simple navigation
-  const goToPlayer = (url: string) => {
-    setAudioData({ url });
-    setCurrentPage("player");
-  };
-
-  const goToScanner = (restart = false) => {
-    setAudioData(null);
-    setPlayer({ isPlaying: false, currentTime: 0, duration: 0 });
-    setCurrentPage("scanner");
-    if (restart) {
-      startScanner();
-    } else {
-      setScanner((prev) => ({ ...prev, message: "" }));
-    }
-  };
 
   // Cleanup on unmount
   useEffect(() => {
