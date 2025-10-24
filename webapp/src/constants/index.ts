@@ -1,9 +1,9 @@
-import { QRCodeConfig } from '../types';
-
-export const QR_CODE_CONFIG: QRCodeConfig = {
-  fps: 10,
-  qrbox: { width: 250, height: 250 },
-  aspectRatio: 1.0,
+// Nimiq QR Scanner configuration
+export const QR_SCANNER_CONFIG = {
+  preferredCamera: 'environment' as const,
+  highlightScanRegion: true,
+  highlightCodeOutline: true,
+  maxScansPerSecond: 5,
 };
 
 export const AUDIO_VALIDATION_TIMEOUT = 5000;

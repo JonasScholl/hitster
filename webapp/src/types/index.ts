@@ -22,12 +22,6 @@ export interface CameraError {
   message: string;
 }
 
-export interface QRCodeConfig {
-  fps: number;
-  qrbox: { width: number; height: number };
-  aspectRatio: number;
-}
-
 export interface AllowedHosts {
   appleMusic: string[];
   spotify: string[];

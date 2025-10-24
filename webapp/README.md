@@ -16,7 +16,7 @@ A modern React application for scanning QR codes to play Apple Music audio previ
 - **React 19** with TypeScript
 - **Vite** for fast development and building
 - **Tailwind CSS** for styling
-- **html5-qrcode** for QR code scanning
+- **qr-scanner** for QR code scanning
 - **pnpm** for package management
 
 ## Getting Started

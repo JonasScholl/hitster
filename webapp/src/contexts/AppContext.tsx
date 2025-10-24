@@ -1,4 +1,4 @@
-import { Html5Qrcode } from "html5-qrcode";
+import QrScanner from "qr-scanner";
 import React, {
   createContext,
   useCallback,
@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { QR_CODE_CONFIG, SCANNER_MESSAGES } from "../constants";
+import { QR_SCANNER_CONFIG, SCANNER_MESSAGES } from "../constants";
 import { AudioData, PageType, PlayerState, ScannerState } from "../types";
 import { getAppleMusicSongUrl } from "../utils/appleMusic";
 import {
@@ -16,6 +16,12 @@ import {
   validateAudioUrl,
 } from "../utils/audioValidation";
 import { checkCameraPermission, createCameraError } from "../utils/cameraUtils";
+
+// Set the worker path for QR scanner
+QrScanner.WORKER_PATH = new URL(
+  "qr-scanner/qr-scanner-worker.min.js",
+  import.meta.url
+).href;
 
 // Simple context interface
 interface AppContextType {
@@ -61,7 +67,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   // Refs
-  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const scannerRef = useRef<QrScanner | null>(null);
   const qrReaderRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -90,13 +96,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (qrReaderRef.current) {
-        scannerRef.current = new Html5Qrcode(qrReaderRef.current.id);
-        await scannerRef.current.start(
-          { facingMode: "environment" },
-          QR_CODE_CONFIG,
-          (decodedText) => handleScanSuccess(decodedText),
-          (_errorMessage) => {}
+        // Create a video element for the scanner
+        const video = document.createElement("video");
+        video.style.width = "100%";
+        video.style.height = "100%";
+        video.style.objectFit = "cover";
+        qrReaderRef.current.innerHTML = "";
+        qrReaderRef.current.appendChild(video);
+
+        scannerRef.current = new QrScanner(
+          video,
+          (result) => handleScanSuccess(result.data),
+          QR_SCANNER_CONFIG
         );
+
+        scannerRef.current.setInversionMode("both");
+
+        await scannerRef.current.start();
 
         setScanner((prev) => ({
           ...prev,
@@ -113,7 +129,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const stopScanner = useCallback(async () => {
     if (scannerRef.current) {
       try {
-        await scannerRef.current.stop();
+        scannerRef.current.stop();
+        scannerRef.current.destroy();
         scannerRef.current = null;
         setScanner((prev) => ({
           ...prev,
@@ -398,7 +415,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     return () => {
       if (scannerRef.current) {
-        scannerRef.current.stop().catch(console.error);
+        scannerRef.current.stop();
+        scannerRef.current.destroy();
       }
     };
   }, []);
