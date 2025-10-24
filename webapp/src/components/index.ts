@@ -11,7 +11,6 @@ export { default as ScannerPage } from './ScannerPage';
 
 // Player components
 export { default as AudioPlayer } from './player/AudioPlayer';
-export { default as PlayerActions } from './player/PlayerActions';
 export { default as PlayerHeader } from './player/PlayerHeader';
 export { default as PlayerPage } from './PlayerPage';
 

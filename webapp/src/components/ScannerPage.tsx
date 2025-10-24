@@ -26,7 +26,7 @@ const ScannerPage: React.FC = () => {
           <p className="text-gray-300 text-sm">Scan a QR code to play music</p>
         </div>
 
-        {!scanner.isScanning && (
+        {!scanner.isScanning && !scanner.showCameraHelp && (
           <div className="text-center mb-4">
             <Button onClick={startScanner}>Scan Card</Button>
           </div>
