@@ -369,7 +369,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // Check for GitHub Pages redirected URL format: /?/qr/am/<id>
         let appleMusicPath = null;
-        if (path === "/" && search.startsWith("/?/qr/am/")) {
+        if (path === "/" && search.startsWith("?/qr/am/")) {
           appleMusicPath = search.slice(1); // Remove the leading ?
         } else if (path.startsWith("/qr/am/")) {
           appleMusicPath = path;
@@ -386,16 +386,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
             }));
 
             try {
-              // Reconstruct the original URL for Apple Music API
-              const originalUrl = appleMusicPath.startsWith("/?/")
-                ? currentUrl.replace("/?/", "/")
-                : currentUrl;
-
-              // Get the Apple Music preview URL
-              const previewUrl = await getAppleMusicSongUrl(originalUrl);
-
+              const previewUrl = await getAppleMusicSongUrl(
+                url.origin + appleMusicPath
+              );
               if (previewUrl) {
-                // Load the audio and go directly to player
                 setAudioData({ url: previewUrl });
                 setCurrentPage("player");
                 setScanner((prev) => ({ ...prev, message: "" }));
