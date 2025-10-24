@@ -8,22 +8,20 @@ const PlayerPage: React.FC = () => {
     useAppContext();
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="container mx-auto px-10 py-6 flex-1 flex flex-col">
-        <PlayerHeader onClose={() => goToScanner(true)} />
+    <div className="container mx-auto max-w-xl p-4 flex-1 flex flex-col h-full gap-6">
+      <PlayerHeader onClose={() => goToScanner(true)} />
 
-        <AudioPlayer
-          isPlaying={player.isPlaying}
-          currentTime={player.currentTime}
-          duration={player.duration}
-          onTogglePlayPause={togglePlayPause}
-          onSeek={seekTo}
-          className="mt-6"
-        />
+      <AudioPlayer
+        isPlaying={player.isPlaying}
+        currentTime={player.currentTime}
+        duration={player.duration}
+        onTogglePlayPause={togglePlayPause}
+        onSeek={seekTo}
+        className="w-full"
+      />
 
-        {/* Hidden audio element */}
-        <audio ref={audioRef} preload="metadata" />
-      </div>
+      {/* Hidden audio element */}
+      <audio ref={audioRef} preload="metadata" />
     </div>
   );
 };

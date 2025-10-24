@@ -7,7 +7,7 @@ interface ScannerInfoProps {
 const ScannerInfo: React.FC<ScannerInfoProps> = ({ className = "" }) => {
   return (
     <div
-      className={`absolute bottom-4 left-4 right-4 max-w-md mx-auto bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-lg p-3 ${className}`}
+      className={`max-w-md bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-lg p-3 ${className}`}
     >
       <div className="flex items-start space-x-2">
         <div className="shrink-0">
