@@ -19,7 +19,7 @@ const ScannerPage: React.FC = () => {
   return (
     <div className="h-full flex flex-col relative">
       <div className="container mx-auto px-4 py-4 pb-24 flex-1 flex flex-col">
-        <div className="text-center mb-4">
+        <div className="text-center mb-4 mt-6">
           <h1 className="text-3xl font-bold mb-2 bg-linear-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Hitster QR Scanner
           </h1>

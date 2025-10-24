@@ -223,7 +223,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     [setScanner, loadAudio]
   );
 
-  const loadManualUrl = useCallback(() => {
+  const loadManualUrl = useCallback(async () => {
     const url = scanner.manualUrl.trim();
     if (!url) {
       setScanner((prev) => ({ ...prev, message: SCANNER_MESSAGES.ENTER_URL }));
@@ -252,8 +252,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     setScanner((prev) => ({ ...prev, message: "Loading audio from URL..." }));
-    loadAudio(url);
-  }, [setScanner, loadAudio]);
+    const audioUrl = await getAppleMusicSongUrl(url);
+    loadAudio(audioUrl);
+  }, [scanner.manualUrl, setScanner, loadAudio]);
 
   const setManualUrl = useCallback(
     (url: string) => {
