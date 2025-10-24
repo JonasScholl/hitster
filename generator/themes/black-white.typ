@@ -4,14 +4,14 @@
 #let page_width = 210mm
 #let page_height = 297mm
 
-#let margin_x = 2cm
+#let margin_x = 1cm
 #let margin_y = 1cm
 
-#let rows = 5
+#let rows = 4
 #let cols = 3
-#let card_size = 5cm
+#let card_size = 6cm
 
-#let marking_padding = 1cm
+#let marking_padding = 0.5cm
 
 #assert(rows * card_size + 2 * marking_padding + margin_y <= page_height)
 #assert(cols * card_size + 2 * marking_padding + margin_x <= page_width)

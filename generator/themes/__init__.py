@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from enum import StrEnum
 from pathlib import Path
+from typing import Optional
 
 
 class Theme(StrEnum):
@@ -9,7 +10,7 @@ class Theme(StrEnum):
     HALLOWEEN = "halloween"
 
 
-def get_rgb_colors(theme: Theme) -> list[tuple[int, int, int]]:
+def get_card_colors(theme: Theme) -> list[tuple[int, int, int]]:
     """Get the RGB colors of the palette for the given theme"""
 
     match theme:
@@ -33,6 +34,30 @@ def get_rgb_colors(theme: Theme) -> list[tuple[int, int, int]]:
             return [(255, 255, 255)]
 
 
+def get_qr_image_color(theme: Theme) -> tuple[int, int, int] | None:
+    match theme:
+        case Theme.HALLOWEEN:
+            return (255, 126, 36)
+        case _:
+            return None
+
+
+def get_qr_background_color(theme: Theme) -> tuple[int, int, int]:
+    match theme:
+        case Theme.BLACK_WHITE:
+            return (255, 255, 255)
+        case _:
+            return (1, 0, 0)
+
+
+def get_qr_fill_color(theme: Theme) -> tuple[int, int, int]:
+    match theme:
+        case Theme.BLACK_WHITE:
+            return (0, 0, 0)
+        case _:
+            return (255, 255, 255)
+
+
 def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
     """Get the paths of QR code images for the given theme"""
 
@@ -46,12 +71,3 @@ def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
         return sorted(images_dir.glob("bat_*.svg")) + sorted(images_dir.glob("tombstone_*.svg"))
 
     return []
-
-
-def card_background_color_generator(theme: Theme) -> Iterator[tuple[int, int, int]]:
-    background_colors = get_rgb_colors(theme)
-
-    index = 0
-    while True:
-        yield background_colors[index % len(background_colors)]
-        index += 1

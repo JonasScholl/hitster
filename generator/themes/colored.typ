@@ -4,14 +4,14 @@
 #let page_width = 210mm
 #let page_height = 297mm
 
-#let margin_x = 2cm
+#let margin_x = 1cm
 #let margin_y = 1cm
 
-#let rows = 5
+#let rows = 4
 #let cols = 3
-#let card_size = 5cm
+#let card_size = 6cm
 
-#let marking_padding = 1cm
+#let marking_padding = 0.5cm
 
 // Color palette
 #let color_palette = (
@@ -51,13 +51,14 @@
 }
 
 #let qr_front_side(song, song_index) = {
+  let qr_code = image("../../generated/qr-codes/" + song.id + ".png", width: card_size - 1cm)
   square(
     size: card_size,
-    fill: get_card_color(song_index),
+    fill: rgb(1, 0, 0),
     inset: 0.5cm,
-    image(
-      "../../generated/qr-codes/" + song.id + ".png",
-      width: 100%
+    align(
+      center,
+      qr_code
     )
   )
 }

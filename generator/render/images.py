@@ -9,7 +9,7 @@ import cairosvg
 from PIL import Image
 
 from generator.logger import item
-from generator.themes import Theme, get_image_paths, get_rgb_colors
+from generator.themes import Theme, get_card_colors, get_image_paths
 from generator.utils import calculate_relative_luminance, get_max_workers, update_progress_bar
 
 
@@ -17,7 +17,7 @@ def generate_decoration_images(theme: Theme) -> None:
     """Generate decoration images for the songs and save them to the generated/decoration-images directory"""
 
     image_paths = get_image_paths(theme, purpose="decoration")
-    colors = get_rgb_colors(theme)
+    colors = get_card_colors(theme)
 
     if not image_paths:
         return
@@ -57,7 +57,12 @@ def generate_decoration_images(theme: Theme) -> None:
         item(f"Successfully generated all {total_images} embedded QR code images")
 
 
-def process_embedded_image(image_path: Path, background_color: tuple[int, int, int], outline=False) -> Path:
+def process_embedded_image(
+    image_path: Path,
+    background_color: tuple[int, int, int],
+    fill_color: tuple[int, int, int] | None = None,
+    outline=False,
+) -> Path:
     """Process an embedded SVG image to tint it with a variation of the background color and add an outline
 
     Args:
@@ -86,7 +91,9 @@ def process_embedded_image(image_path: Path, background_color: tuple[int, int, i
         # Find and modify the fill color in the SVG
         for elem in root.iter():
             if "fill" in elem.attrib and elem.attrib["fill"] == "#000000":
-                elem.attrib["fill"] = get_secondary_hex_color(background_color)
+                elem.attrib["fill"] = (
+                    rgb_to_hex(fill_color) if fill_color else get_secondary_hex_color(background_color)
+                )
 
         if outline:
             stroke_width = 750
