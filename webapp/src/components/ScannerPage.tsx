@@ -4,7 +4,6 @@ import CameraHelpModal from "./scanner/CameraHelpModal";
 import QRCodeReader from "./scanner/QRCodeReader";
 import ScannerInfo from "./scanner/ScannerInfo";
 import ScannerMessage from "./scanner/ScannerMessage";
-import Button from "./ui/Button";
 
 const ScannerPage: React.FC = () => {
   const { scanner, qrReaderRef, startScanner, loadManualUrl, setManualUrl } =
@@ -26,13 +25,17 @@ const ScannerPage: React.FC = () => {
           <p className="text-gray-300 text-sm">Scan a QR code to play music</p>
         </div>
 
-        {!scanner.isScanning && !scanner.showCameraHelp && (
-          <div className="text-center mb-4">
-            <Button onClick={startScanner}>Scan Card</Button>
-          </div>
-        )}
-
         <div className="flex-1 flex flex-col justify-center">
+          {!scanner.isScanning && !scanner.showCameraHelp && (
+            <div className="flex justify-center items-center mb-8">
+              <button
+                onClick={startScanner}
+                className="w-32 h-32 rounded-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold text-2xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-purple-500/50"
+              >
+                Start
+              </button>
+            </div>
+          )}
           <QRCodeReader qrReaderRef={qrReaderRef} />
           <ScannerMessage message={scanner.message} />
         </div>
