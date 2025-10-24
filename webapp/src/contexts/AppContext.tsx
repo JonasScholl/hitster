@@ -393,6 +393,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
                 setAudioData({ url: previewUrl });
                 setCurrentPage("player");
                 setScanner((prev) => ({ ...prev, message: "" }));
+
+                // Clear the URL path after loading the song
+                window.history.replaceState({}, document.title, "/");
               } else {
                 setScanner((prev) => ({
                   ...prev,
