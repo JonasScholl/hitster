@@ -14,7 +14,9 @@ const QRCodeReader: React.FC<QRCodeReaderProps> = ({
   const { scanner, stopScanner } = useAppContext();
 
   return (
-    <div className={`relative scanner-container max-h-96 ${className}`}>
+    <div
+      className={`relative scanner-container max-h-96 max-sm:max-h-64 ${className}`}
+    >
       <div
         id="qr-reader"
         ref={qrReaderRef}
