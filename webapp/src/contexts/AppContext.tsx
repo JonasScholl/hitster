@@ -17,12 +17,6 @@ import {
 } from "../utils/audioValidation";
 import { checkCameraPermission, createCameraError } from "../utils/cameraUtils";
 
-// Set the worker path for QR scanner
-QrScanner.WORKER_PATH = new URL(
-  "qr-scanner/qr-scanner-worker.min.js",
-  import.meta.url
-).href;
-
 // Simple context interface
 interface AppContextType {
   // State
