@@ -340,6 +340,60 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [audioData]);
 
+  // Handle URL-based routing on mount
+  useEffect(() => {
+    const handleUrlRouting = async () => {
+      const currentUrl = window.location.href;
+
+      try {
+        const url = new URL(currentUrl);
+        const path = url.pathname;
+
+        // Check if the path matches /qr/am/<id> pattern
+        if (path.startsWith("/qr/am/")) {
+          const songId = path.split("/qr/am/").pop();
+
+          if (songId) {
+            console.log("Detected Apple Music URL, loading song directly...");
+            setScanner((prev) => ({
+              ...prev,
+              message: "Loading Apple Music song...",
+            }));
+
+            try {
+              // Get the Apple Music preview URL
+              const previewUrl = await getAppleMusicSongUrl(currentUrl);
+
+              if (previewUrl) {
+                // Load the audio and go directly to player
+                setAudioData({ url: previewUrl });
+                setCurrentPage("player");
+                setScanner((prev) => ({ ...prev, message: "" }));
+              } else {
+                setScanner((prev) => ({
+                  ...prev,
+                  message:
+                    "Could not load Apple Music song. Please try scanning again.",
+                }));
+              }
+            } catch (error) {
+              console.error("Error loading Apple Music song:", error);
+              setScanner((prev) => ({
+                ...prev,
+                message:
+                  "Error loading Apple Music song. Please try scanning again.",
+              }));
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error parsing URL:", error);
+      }
+    };
+
+    handleUrlRouting();
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
