@@ -23,6 +23,21 @@ html {
     @apply bg-gray-900 text-white;
 }
 
+/* Ensure full viewport height on mobile */
+html,
+body,
+#root {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Mobile-specific adjustments */
+@media (max-height: 600px) {
+    .scanner-container {
+        max-height: 16rem;
+    }
+}
+
 button {
     background: linear-gradient(155deg, #4f46e5 0%, #7c3aed 100%);
     cursor: pointer;

@@ -7,7 +7,7 @@ const AppContent: React.FC = () => {
   const { currentPage } = useAppContext();
 
   return (
-    <div className="min-h-screen">
+    <div className="h-screen overflow-hidden">
       {currentPage === "scanner" ? <ScannerPage /> : <PlayerPage />}
     </div>
   );

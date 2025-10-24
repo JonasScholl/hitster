@@ -13,11 +13,11 @@ const QRCodeReader: React.FC<QRCodeReaderProps> = ({
 }) => {
   const { scanner, stopScanner } = useAppContext();
   return (
-    <div className={`relative scanner-container ${className}`}>
+    <div className={`relative scanner-container max-h-96 ${className}`}>
       <div
         id="qr-reader"
         ref={qrReaderRef}
-        className="bg-gray-800 rounded-xl shadow-2xl"
+        className="bg-gray-800 rounded-xl shadow-2xl w-full"
       />
       {scanner.isScanning && (
         <div className="absolute top-2 right-2">
