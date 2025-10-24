@@ -31,7 +31,7 @@ const ScannerPage: React.FC = () => {
         </div>
       )}
 
-      <QRCodeReader qrReaderRef={qrReaderRef} />
+      {<QRCodeReader qrReaderRef={qrReaderRef} />}
       <ScannerMessage message={scanner.message} />
 
       {scanner.showCameraHelp && (

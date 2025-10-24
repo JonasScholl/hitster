@@ -13,19 +13,17 @@ const QRCodeReader: React.FC<QRCodeReaderProps> = ({
 }) => {
   const { scanner, stopScanner } = useAppContext();
   return (
-    <div
-      className={`relative scanner-container ${className} ${
-        scanner.isScanning ? "hidden" : ""
-      }`}
-    >
+    <div className={`relative scanner-container ${className}`}>
       <div
         id="qr-reader"
         ref={qrReaderRef}
         className="bg-gray-800 rounded-xl shadow-2xl"
       />
-      <div className="absolute top-2 right-2">
-        <CloseIconButton onClick={stopScanner} ariaLabel="Close scanner" />
-      </div>
+      {scanner.isScanning && (
+        <div className="absolute top-2 right-2">
+          <CloseIconButton onClick={stopScanner} ariaLabel="Close scanner" />
+        </div>
+      )}
     </div>
   );
 };
