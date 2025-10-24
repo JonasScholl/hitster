@@ -135,7 +135,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error stopping scanner:", err);
       }
     }
-  }, [setScanner]);
+
+    // Clear the scanner container content
+    if (qrReaderRef.current) {
+      qrReaderRef.current.innerHTML = "";
+    }
+  }, [setScanner, qrReaderRef]);
 
   const loadAudio = useCallback(
     async (url: string) => {
