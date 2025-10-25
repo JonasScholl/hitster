@@ -8,9 +8,9 @@ from time import time
 import cairosvg
 from PIL import Image
 
-from generator.logger import item
+from generator.logger import item, progress_bar
 from generator.themes import Theme, get_card_colors, get_image_paths
-from generator.utils import calculate_relative_luminance, get_max_workers, update_progress_bar
+from generator.utils import calculate_relative_luminance, get_max_workers
 
 
 def generate_decoration_images(theme: Theme) -> None:
@@ -38,17 +38,13 @@ def generate_decoration_images(theme: Theme) -> None:
             try:
                 future.result()
                 completed_count += 1
-                update_progress_bar(
-                    completed_count, total_images, indent=4, prefix="QR Code Images", start_time=start_time
-                )
+                progress_bar(completed_count, total_images, indent=4, prefix="Images", start_time=start_time)
             except Exception as e:
                 image_path = future_to_image_path[future]
                 error_msg = f"Error processing image {image_path}: {e}"
                 item(error_msg)
                 errors.append(error_msg)
-                update_progress_bar(
-                    completed_count, total_images, indent=4, prefix="QR Code Images", start_time=start_time
-                )
+                progress_bar(completed_count, total_images, indent=4, prefix="Images", start_time=start_time)
                 sys.exit(1)
 
     if errors:

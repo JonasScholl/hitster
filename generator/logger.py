@@ -1,6 +1,8 @@
 """Modern, fancy but minimalistic logging module using Rich."""
 
 import logging
+import sys
+import time
 
 from rich.console import Console
 from rich.logging import RichHandler
@@ -122,6 +124,77 @@ class HitsterLogger:
         """Print a newline for spacing."""
         console.print()
 
+    def progress_bar(
+        self,
+        completed: int,
+        total: int,
+        bar_length: int = 30,
+        indent: int = 0,
+        prefix: str = "Progress",
+        show_eta: bool = True,
+        start_time: float | None = None,
+    ) -> None:
+        """Update a fancy progress bar in the console with enhanced visuals and ETA"""
+        if total == 0:
+            return
+
+        progress = completed / total
+        filled_length = int(bar_length * progress)
+
+        # Create a subtle progress bar with consistent styling
+        if completed == total:
+            # Completed state - all filled
+            bar = "▓" * bar_length
+            bar_color = "✓"
+        elif progress < 0.05 and completed == 0:
+            # Just started - show subtle spinner
+            spinner_chars = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+            spinner = spinner_chars[int(time.time() * 10) % len(spinner_chars)]
+            bar = f"{spinner} " + "·" * (bar_length - 2)
+            bar_color = " "
+        else:
+            # Consistent progress bar with subtle characters
+            bar = "▓" * filled_length + "·" * (bar_length - filled_length)
+            bar_color = " "
+
+        percentage = progress * 100
+
+        # Calculate ETA if start_time is provided
+        eta_text = ""
+        if show_eta and start_time and completed > 0:
+            elapsed = time.time() - start_time
+            if completed < total:
+                rate = completed / elapsed
+                remaining = total - completed
+                eta_seconds = remaining / rate
+                eta_text = f" ETA: {self._format_time(eta_seconds)}"
+            else:
+                eta_text = f" Completed in {self._format_time(elapsed)}"
+
+        # Create the progress bar with subtle styling
+        progress_text = f"{bar_color} {prefix}: [{bar}] {completed}/{total} ({percentage:.1f}%){eta_text}"
+
+        # Use \r to return to the beginning of the line and overwrite
+        sys.stdout.write(f"\r{' ' * indent}{progress_text}")
+        sys.stdout.flush()
+
+        # Add newline when complete
+        if completed == total:
+            sys.stdout.write("\n")
+
+    def _format_time(self, seconds: float) -> str:
+        """Format time in a human-readable way"""
+        if seconds < 60:
+            return f"{seconds:.1f}s"
+        elif seconds < 3600:
+            minutes = int(seconds // 60)
+            secs = int(seconds % 60)
+            return f"{minutes}m{secs}s"
+        else:
+            hours = int(seconds // 3600)
+            minutes = int((seconds % 3600) // 60)
+            return f"{hours}h{minutes}m"
+
 
 logger = HitsterLogger()
 
@@ -138,3 +211,4 @@ skip = logger.skip
 newline = logger.newline
 progress_start = logger.progress_start
 progress_stop = logger.progress_stop
+progress_bar = logger.progress_bar

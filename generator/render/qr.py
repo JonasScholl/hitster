@@ -10,10 +10,10 @@ from qrcode.image.styles.colormasks import SolidFillColorMask
 from qrcode.image.styles.moduledrawers.pil import CircleModuleDrawer
 
 from generator.connectors import Song
-from generator.logger import item
+from generator.logger import item, progress_bar
 from generator.render.images import process_embedded_image
 from generator.themes import Theme, get_image_paths, get_qr_background_color, get_qr_fill_color, get_qr_image_color
-from generator.utils import get_max_workers, update_progress_bar
+from generator.utils import get_max_workers
 
 
 def _qr_code_image_generator(theme: Theme) -> Iterator[Path]:
@@ -98,14 +98,14 @@ def generate_qr_codes(theme: Theme, songs: list[Song]) -> None:
             try:
                 future.result()
                 completed_count += 1
-                update_progress_bar(completed_count, total_songs, indent=4, prefix="QR Codes", start_time=start_time)
+                progress_bar(completed_count, total_songs, indent=4, prefix="QR Codes", start_time=start_time)
 
             except Exception as e:
                 song = future_to_song[future]
                 error_msg = f"Error generating QR code for song {song.id}: {e}"
                 item(error_msg)
                 errors.append(error_msg)
-                update_progress_bar(completed_count, total_songs, indent=4, prefix="QR Codes", start_time=start_time)
+                progress_bar(completed_count, total_songs, indent=4, prefix="QR Codes", start_time=start_time)
 
     if errors:
         item(f"Completed with {len(errors)} errors out of {total_songs} songs")
