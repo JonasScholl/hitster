@@ -56,8 +56,10 @@ class SpotifyConnector(Connector):
                     songs.append(
                         Song(
                             id=track["id"],
-                            title=name,
-                            artists=[artist.get("name", "Unknown") for artist in artists],
+                            title=self.sanitize_song_title(name),
+                            artists=self.add_featuring_artists(
+                                name, [artist.get("name", "Unknown") for artist in artists]
+                            ),
                             year=year,
                             url=url,
                             source=Source.SPOTIFY,

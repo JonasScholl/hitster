@@ -63,8 +63,8 @@ class AppleMusicConnector(Connector):
                         songs.append(
                             Song(
                                 id=item["id"],
-                                title=name,
-                                artists=[artists],
+                                title=self.sanitize_song_title(name),
+                                artists=self.add_featuring_artists(name, [artists]),
                                 year=year,
                                 url=preview_url,
                                 source=Source.APPLE_MUSIC,
