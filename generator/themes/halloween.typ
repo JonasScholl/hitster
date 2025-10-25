@@ -105,7 +105,7 @@
   }else {
     "tombstone_0" + str(calc.rem(song_index, 7) + 1) + "_" + rgb_suffix + ".png"
   }
-  let image = image("../../generated/images/" + image_name, width: 0.1 * card_size)
+  let image = image("../../generated/images/" + image_name, height: 0.15 * card_size)
 
   square(
     size: card_size,
