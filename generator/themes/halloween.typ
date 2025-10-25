@@ -19,7 +19,8 @@
   rgb("#43281A"),
   rgb("#3F5C5D"),
   rgb("#B65718"),
-  rgb("#9FBCBF"),
+  rgb("#574964"),
+  rgb("#8C1007"),
 )
 
 #assert(rows * card_size + 2 * marking_padding + margin_y <= page_height)
@@ -50,22 +51,6 @@
   }
 }
 
-// Function to determine if text should be black or white based on song index
-// This maps to the color palette indices where dark colors use white text
-#let get_text_color(song_index) = {
-  let palette_size = color_palette.len()
-  if song_index < palette_size {
-    // Dark colors (indices 0, 1, 2, 3) use light gray text (80% white), light colors (indices 4) use black text
-    if song_index <= 3 {
-      rgb("#F2F2F2")  // Light gray instead of pure white
-    } else {
-      black
-    }
-  } else {
-    get_text_color(song_index - palette_size)
-  }
-}
-
 // Function to convert RGB color to filename format based on song index
 #let rgb_to_filename(song_index) = {
   let palette_size = color_palette.len()
@@ -84,8 +69,10 @@
     "63_92_93"  // #3F5C5D
   } else if actual_index == 3 {
     "182_87_24" // #B65718
+  } else if actual_index == 4 {
+    "87_73_100" // #574964
   } else {
-    "159_188_191" // #9FBCBF
+    "140_16_7" // #8C1007
   }
 }
 
@@ -104,7 +91,7 @@
 
 #let text_back_side(song, song_index) = {
   let bg_color = get_card_color(song_index)
-  let text_color = get_text_color(song_index)
+  let text_color = rgb("#F2F2F2")
 
   // Random image and corner selection based on song index
   let corner = calc.rem(song_index, 4)  // 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right

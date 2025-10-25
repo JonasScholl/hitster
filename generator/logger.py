@@ -56,7 +56,7 @@ class HitsterLogger:
 
     def success(self, message: str, **kwargs) -> None:
         """Log success message with green color."""
-        console.print(f"[success]✓[/success]  {message}", **kwargs)
+        console.print(f"[success]✓[/success]  {message}\n", **kwargs)
 
     def warning(self, message: str, **kwargs) -> None:
         """Log warning message with yellow color."""
