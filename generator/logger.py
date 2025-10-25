@@ -26,6 +26,8 @@ console = Console(theme=HITSTER_THEME, stderr=True)
 class HitsterLogger:
     """Modern logger with rich formatting and progress tracking."""
 
+    HEADER_LENGTH = 100
+
     def __init__(self, name: str = "hitster"):
         self.name = name
         self._setup_logging()
@@ -77,9 +79,9 @@ class HitsterLogger:
     def header(self, message: str) -> None:
         """Log a header message with accent color and spacing."""
         console.print()
-        console.print(f"[accent]{'=' * 50}[/accent]")
-        console.print(f"[accent]{message.center(50)}[/accent]")
-        console.print(f"[accent]{'=' * 50}[/accent]")
+        console.print(f"[accent]{'=' * self.HEADER_LENGTH}[/accent]")
+        console.print(f"[accent]{message.center(self.HEADER_LENGTH)}[/accent]")
+        console.print(f"[accent]{'=' * self.HEADER_LENGTH}[/accent]")
         console.print()
 
     def section(self, message: str) -> None:

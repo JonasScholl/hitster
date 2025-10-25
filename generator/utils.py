@@ -38,7 +38,7 @@ def calculate_relative_luminance(rgb: tuple[int, int, int]) -> float:
 def update_progress_bar(
     completed: int,
     total: int,
-    bar_length: int = 50,
+    bar_length: int = 30,
     indent: int = 0,
     prefix: str = "Progress",
     show_eta: bool = True,

@@ -3,11 +3,12 @@ import random
 import shutil
 from pathlib import Path
 
+import term_image.image
 from dotenv import load_dotenv
 
 from generator.connectors import resolve_connector
-from generator.logger import header, section, step, success
-from generator.render import generate_cards_pdf, generate_overview_pdf, generate_qr_codes
+from generator.logger import HitsterLogger, header, section, step, success
+from generator.render import generate_cards_pdf, generate_qr_codes, generate_year_distribution
 from generator.render.images import generate_decoration_images
 from generator.themes import Theme
 from generator.utils import get_env_var
@@ -71,11 +72,16 @@ def main() -> None:
     generate_cards_pdf("generated/hitster.pdf")
     success("Cards PDF created")
 
-    step("Creating year overview PDF...")
-    generate_overview_pdf(songs, "generated/overview.pdf")
-    success("Overview PDF created")
+    step("Creating year distribution charts...")
+    generate_year_distribution(songs, "generated/year-distribution.pdf", "generated/year-distribution.png")
+    success("Year distribution charts created")
 
-    header("🎉 Generation Complete!")
+    section("Song Year Distribution")
+    analysis_file = term_image.image.from_file("generated/year-distribution.png", width=HitsterLogger.HEADER_LENGTH)
+    analysis_file.draw(h_align="left", pad_height=analysis_file.height)
+    Path("generated/year-distribution.png").unlink()
+
+    header("🚀 Generation Complete!")
 
 
 if __name__ == "__main__":
