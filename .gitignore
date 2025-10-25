@@ -1,16 +1,19 @@
+# Wildcard directories
 .venv
 .idea
 .cache
 .ruff_cache
 .env
 
+# Wildcard files
 *.pdf
 *.p8
 
+# Specific files
 .DS_Store
+overrides.json
 
+# Specific directories
 generated
 qr_codes
 __pycache__
-
-!package.json

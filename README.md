@@ -140,6 +140,47 @@ An overview diagram of the release year distribution is automatically created as
 | `APPLE_PRIVATE_KEY_PATH` | Apple Music | Path to your .p8 private key file |
 | `APPLE_MUSIC_USER_TOKEN` | Apple Music | User token for private playlists |
 
+### Song Overrides
+
+You can override song data by creating an `overrides.json` file in the project root. This is useful for correcting incorrect metadata or customizing specific songs. You can take the (`generated/songs.json`) file as template, it has the same structure as the `override.json`.
+
+**File Structure:**
+```json
+[
+    {
+        "id": "song_id_here",
+        "year": 1964,
+        "title": "Custom Title",
+        "artists": ["Custom Artist"]
+    }
+]
+```
+
+**Available Fields:**
+- `id` (required) — Song identifier to match against
+- `year` — Override the release year
+- `title` — Override the song title
+- `artists` — Override the artist list
+- `url` — Override the audio URL
+- `source` — Override the music source
+
+**Example:**
+```json
+[
+    {
+        "id": "400958931",
+        "year": 1964
+    },
+    {
+        "id": "1445667962",
+        "title": "I Put a Spell On You (Remastered)",
+        "year": 1965
+    }
+]
+```
+
+> **Note:** Only the `id` field is required. Any other fields provided will override the corresponding data from the music service.
+
 ## 🎨 Themes
 
 Set the `THEME` environment variable to choose your card design:
@@ -152,18 +193,6 @@ Set the `THEME` environment variable to choose your card design:
 
 ```bash
 THEME="colored"  # Example usage
-```
-
-## 📁 Project Structure
-
-```
-hitster/
-├── generator/         # Card generation engine
-│   ├── connectors/    # Music service integrations
-│   ├── themes/        # Typst card themes
-│   └── main.py        # Main generation script
-├── generated/         # Output files (PDFs, QR codes)
-└── assets/            # Sample images and resources
 ```
 
 ## 🤝 Contributing

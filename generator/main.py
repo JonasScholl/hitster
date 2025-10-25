@@ -36,6 +36,18 @@ def main() -> None:
     Path("generated").mkdir(parents=True, exist_ok=True)
 
     section("Processing Data")
+    if Path("overrides.json").exists():
+        step("Applying overrides from overrides.json...")
+        with Path("overrides.json").open("r", encoding="utf-8") as file:
+            overrides = json.load(file)
+            override_map = {override["id"]: override for override in overrides}
+            for i, song in enumerate(songs):
+                if song.id in override_map:
+                    override_data = override_map[song.id]
+                    override_data = {k: v for k, v in override_data.items() if k != "id"}
+                    songs[i] = song.model_copy(update=override_data)
+        success("Overrides applied")
+
     step("Writing songs to JSON file...")
     with Path("generated/songs.json").open("w", encoding="utf-8") as file:
         json.dump([song.model_dump() for song in songs], file, indent=4, ensure_ascii=False)
