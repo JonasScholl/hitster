@@ -68,6 +68,10 @@ def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
     if theme == Theme.HALLOWEEN:
         if purpose == "qr":
             return sorted(images_dir.glob("pumpkin_*.svg"))
-        return sorted(images_dir.glob("bat_*.svg")) + sorted(images_dir.glob("tombstone_*.svg"))
+        return (
+            sorted(images_dir.glob("bat_*.svg"))
+            + sorted(images_dir.glob("tombstone_*.svg"))
+            + sorted(images_dir.glob("ghost_*.svg"))
+        )
 
     return []

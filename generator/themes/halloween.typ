@@ -108,14 +108,17 @@
 
   // Random image and corner selection based on song index
   let corner = calc.rem(song_index, 4)  // 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right
-  let is_top_corner = corner <= 1
+  let is_top_left_corner = corner == 0
+  let is_top_right_corner = corner == 1
   let rgb_suffix = rgb_to_filename(song_index)
-  let image_name = if is_top_corner {
-    "bat_0" + str(calc.rem(song_index, 9) + 1) + "_" + rgb_suffix + ".png"
-  } else {
-    "tombstone_0" + str(calc.rem(song_index, 9) + 1) + "_" + rgb_suffix + ".png"
+  let image_name = if is_top_left_corner {
+    "bat_0" + str(calc.rem(song_index, 7) + 1) + "_" + rgb_suffix + ".png"
+  } else if is_top_right_corner {
+    "ghost_0" + str(calc.rem(song_index, 6) + 1) + "_" + rgb_suffix + ".png"
+  }else {
+    "tombstone_0" + str(calc.rem(song_index, 7) + 1) + "_" + rgb_suffix + ".png"
   }
-  let image = image("../../generated/images/" + image_name, width: 0.15 * card_size)
+  let image = image("../../generated/images/" + image_name, width: 0.1 * card_size)
 
   square(
     size: card_size,
