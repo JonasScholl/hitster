@@ -68,7 +68,7 @@ class SpotifyConnector(Connector):
 
             results = self._client.next(results) if results["next"] else None
 
-        return sorted(songs, key=lambda song: song.year)
+        return songs
 
     def _resolve_year(self, date: str) -> int:
         date_parts = date.split("-")[::-1]

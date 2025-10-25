@@ -82,7 +82,7 @@ class AppleMusicConnector(Connector):
                 error(f"Error fetching Apple Music playlist: {e}")
                 break
 
-        return sorted(songs, key=lambda song: song.year)
+        return songs
 
     def _resolve_year(self, date: str) -> int:
         """Extract year from Apple Music date string (YYYY-MM-DD format)"""

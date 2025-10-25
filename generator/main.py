@@ -48,6 +48,10 @@ def main() -> None:
                     songs[i] = song.model_copy(update=override_data)
         success("Overrides applied")
 
+    step("Sorting songs by year...")
+    songs.sort(key=lambda song: song.year)
+    success("Songs sorted by year")
+
     step("Writing songs to JSON file...")
     with Path("generated/songs.json").open("w", encoding="utf-8") as file:
         json.dump([song.model_dump() for song in songs], file, indent=4, ensure_ascii=False)
