@@ -11,6 +11,7 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { ellipse, triangle } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
+import { AppProvider } from "./contexts";
 import GeneratePage from "./pages/Generate";
 import PlayPage from "./pages/Play";
 
@@ -49,29 +50,31 @@ setupIonicReact();
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/play">
-            <PlayPage />
-          </Route>
-          <Route exact path="/generate">
-            <GeneratePage />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/play" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="play" href="/play">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Play</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="generate" href="/generate">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Generate</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
+      <AppProvider>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route path="/play">
+              <PlayPage />
+            </Route>
+            <Route exact path="/generate">
+              <GeneratePage />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/play" />
+            </Route>
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom" color="dark">
+            <IonTabButton tab="play" href="/play">
+              <IonIcon aria-hidden="true" icon={triangle} />
+              <IonLabel>Play</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="generate" href="/generate">
+              <IonIcon aria-hidden="true" icon={ellipse} />
+              <IonLabel>Generate</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </AppProvider>
     </IonReactRouter>
   </IonApp>
 );

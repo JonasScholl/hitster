@@ -5,7 +5,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
 
 const GeneratePage: React.FC = () => {
   return (
@@ -21,7 +20,14 @@ const GeneratePage: React.FC = () => {
             <IonTitle size="large">Generate</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Generate page" />
+        <div
+          className="ion-padding"
+          style={{ maxWidth: "1200px", margin: "0 auto" }}
+        >
+          <p className="ion-text-center" style={{ color: "#9CA3AF" }}>
+            Generate page - Coming soon
+          </p>
+        </div>
       </IonContent>
     </IonPage>
   );

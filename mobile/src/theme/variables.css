@@ -65,4 +65,49 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-dark-shade: #292929;
     --ion-color-dark-tint: #444444;
 
+    --ion-color-background: #111828;
+    --ion-color-background-rgb: 17, 24, 40;
+    --ion-color-background-contrast: #ffffff;
+    --ion-color-background-contrast-rgb: 255, 255, 255;
+    --ion-color-background-shade: #0f1523;
+    --ion-color-background-tint: #292e3d;
+}
+
+/* Global background color */
+body,
+ion-app,
+ion-content {
+    --background: #111828;
+    background: #111828;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+}
+
+.scanner-container {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Ensure proper layout for flex containers */
+.h-full {
+    height: 100%;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+/* Custom styling for audio controls */
+.audio-controls {
+    background: rgba(31, 41, 55, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+/* Ensure QR scanner video fits properly */
+#qr-reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
 }
