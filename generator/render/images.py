@@ -154,14 +154,14 @@ def get_secondary_hex_color(color: tuple[int, int, int]) -> str:
     if luminance < 0.179:
         factor = 1.0 + (0.5 - luminance) * 0.8
         base_addition = max(0, 15 - int(luminance * 50))
-        new_r = int(min(255, color[0] * factor + base_addition))
-        new_g = int(min(255, color[1] * factor + base_addition))
-        new_b = int(min(255, color[2] * factor + base_addition))
+        new_r = int(max(0, min(255, color[0] * factor + base_addition)))
+        new_g = int(max(0, min(255, color[1] * factor + base_addition)))
+        new_b = int(max(0, min(255, color[2] * factor + base_addition)))
     else:
-        factor = 1.0 - (luminance - 0.5) * 5
-        new_r = int(max(0, color[0] * factor))
-        new_g = int(max(0, color[1] * factor))
-        new_b = int(max(0, color[2] * factor))
+        factor = 1.0 - (luminance - 0.5) * 2
+        new_r = int(max(0, min(255, color[0] * factor)))
+        new_g = int(max(0, min(255, color[1] * factor)))
+        new_b = int(max(0, min(255, color[2] * factor)))
 
     return rgb_to_hex((new_r, new_g, new_b))
 

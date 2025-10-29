@@ -15,12 +15,12 @@
 
 // Color palette
 #let color_palette = (
-  rgb("#262A20"),
+  rgb("#374f2f"),
   rgb("#43281A"),
   rgb("#3F5C5D"),
-  rgb("#B65718"),
+  rgb("#E67E24"),
   rgb("#574964"),
-  rgb("#8C1007"),
+  rgb("#b51409"),
 )
 
 #assert(rows * card_size + 2 * marking_padding + margin_y <= page_height)
@@ -62,17 +62,17 @@
 
   // Map palette indices to RGB values found in generated images
   if actual_index == 0 {
-    "38_42_32"  // #262A20
+    "55_79_47"  // #374f2f
   } else if actual_index == 1 {
     "67_40_26"  // #43281A
   } else if actual_index == 2 {
     "63_92_93"  // #3F5C5D
   } else if actual_index == 3 {
-    "182_87_24" // #B65718
+    "230_126_36" // #B65718
   } else if actual_index == 4 {
     "87_73_100" // #574964
   } else {
-    "140_16_7" // #8C1007
+    "181_20_9" // #b51409
   }
 }
 

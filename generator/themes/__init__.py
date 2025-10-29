@@ -1,7 +1,5 @@
-from collections.abc import Iterator
 from enum import StrEnum
 from pathlib import Path
-from typing import Optional
 
 
 class Theme(StrEnum):
@@ -24,12 +22,12 @@ def get_card_colors(theme: Theme) -> list[tuple[int, int, int]]:
             ]
         case Theme.HALLOWEEN:
             return [
-                (38, 42, 32),  # #262A20
+                (55, 79, 47),  # #374f2f
                 (67, 40, 26),  # #43281A
                 (63, 92, 93),  # #3F5C5D
-                (182, 87, 24),  # #B65718
+                (230, 126, 36),  # #FF7E24
                 (87, 73, 100),  # #574964
-                (140, 16, 7),  # #8C1007
+                (181, 20, 9),  # #b51409
             ]
         case _:
             return [(255, 255, 255)]

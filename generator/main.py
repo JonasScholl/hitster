@@ -5,9 +5,10 @@ from pathlib import Path
 
 import term_image.image
 from dotenv import load_dotenv
+from term_image.exceptions import InvalidSizeError
 
 from generator.connectors import resolve_connector
-from generator.logger import HitsterLogger, header, section, step, success
+from generator.logger import HitsterLogger, header, section, step, success, warning
 from generator.render import generate_cards_pdf, generate_qr_codes, generate_year_distribution
 from generator.render.images import generate_decoration_images
 from generator.themes import Theme
@@ -77,9 +78,14 @@ def main() -> None:
     success("Year distribution charts created")
 
     section("Song Year Distribution")
-    analysis_file = term_image.image.from_file("generated/year-distribution.png", width=HitsterLogger.HEADER_LENGTH)
-    analysis_file.draw(h_align="left", pad_height=analysis_file.height)
-    Path("generated/year-distribution.png").unlink()
+    try:
+        analysis_file = term_image.image.from_file("generated/year-distribution.png", width=HitsterLogger.HEADER_LENGTH)
+        analysis_file.draw(h_align="left", pad_height=analysis_file.height)
+    except InvalidSizeError:
+        # If the image is too large for the terminal, skip display
+        warning("Year distribution chart is too large to display in terminal")
+    finally:
+        Path("generated/year-distribution.png").unlink()
 
     header("🚀 Generation Complete!")
 

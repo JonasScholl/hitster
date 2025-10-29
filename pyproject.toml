@@ -51,6 +51,7 @@ select = [
 ]
 ignore = [
     "E501",   # line too long, handled by formatter
+    "PLR0915", # too many statements in function
     "PLR0913", # too many arguments
     "PLR0912", # too many branches
     "PLR2004", # magic value used in comparison
