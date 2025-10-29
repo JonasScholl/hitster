@@ -11,9 +11,11 @@ This is a modern DIY solution that generates professional-quality Hitster cards 
 
 </div>
 
+## Example - Halloween Theme 👻
+
 | Front | Back |
 |-------|------|
-| ![Hitster Front](assets/hitster_front.jpg) | ![Hitster Back](assets/hitster_back.jpg) |
+| ![Hitster Front](assets/hitster-halloween-front.jpg) | ![Hitster Back](assets/hitster-halloween-back.jpg) |
 
 ## ✨ Features
 

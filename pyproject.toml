@@ -28,6 +28,9 @@ term-image = "^0.7.2"
 [tool.poetry.scripts]
 generate-hitster-cards = "generator.main:main"
 
+[tool.poetry.group.dev.dependencies]
+pymupdf = "^1.26.5"
+
 [tool.ruff]
 line-length = 120
 target-version = "py312"
