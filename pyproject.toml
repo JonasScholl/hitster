@@ -16,11 +16,11 @@ pyjwt = "^2.8.0"
 cryptography = "^46.0.3"
 requests = "^2.31.0"
 python-dotenv = "^1.2.1"
-pydantic = "^2.12.3"
+pydantic = "^2.12.4"
 rich = "^14.2.0"
 cairosvg = "^2.7.1"
-ruff = "^0.14.3"
-pre-commit = "^4.3.0"
+ruff = "^0.14.4"
+pre-commit = "^4.4.0"
 svglib = "^1.6.0"
 reportlab = "^4.4.4"
 term-image = "^0.7.2"
@@ -29,7 +29,7 @@ term-image = "^0.7.2"
 generate-hitster-cards = "generator.main:main"
 
 [tool.poetry.group.dev.dependencies]
-pymupdf = "^1.26.5"
+pymupdf = "^1.26.6"
 
 [tool.ruff]
 line-length = 120
