@@ -6,6 +6,7 @@ class Theme(StrEnum):
     BLACK_WHITE = "black-white"
     COLORED = "colored"
     HALLOWEEN = "halloween"
+    SUMMER_BREEZE = "summer-breeze"
 
 
 def get_card_colors(theme: Theme) -> list[tuple[int, int, int]]:
@@ -28,6 +29,12 @@ def get_card_colors(theme: Theme) -> list[tuple[int, int, int]]:
                 (230, 126, 36),  # #FF7E24
                 (87, 73, 100),  # #574964
                 (181, 20, 9),  # #b51409
+            ]
+        case Theme.SUMMER_BREEZE:
+            return [
+                (218, 128, 76),  # #DA804C
+                (250, 250, 250),  # #FAFAFA
+                (104, 58, 6),  # #683A06
             ]
         case _:
             return [(255, 255, 255)]
@@ -72,5 +79,10 @@ def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
             + sorted(images_dir.glob("tombstone_*.svg"))
             + sorted(images_dir.glob("ghost_*.svg"))
         )
+
+    if theme == Theme.SUMMER_BREEZE:
+        if purpose == "qr":
+            return sorted(images_dir.glob("summer-breeze-logo.svg"))
+        return []
 
     return []

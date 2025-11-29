@@ -55,6 +55,7 @@ def _generate_qr_code(
 
     qr_image = qr.make_image(
         embeded_image_path=str(image_path.absolute()) if image_path else None,
+        embeded_image_ratio=0.5,
         module_drawer=CircleModuleDrawer(),
         color_mask=SolidFillColorMask(
             back_color=get_qr_background_color(theme),
