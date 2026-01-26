@@ -8,7 +8,7 @@ packages = [{include = "generator"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-typst = "^0.14.5"
+typst = "^0.14.7"
 spotipy = "^2.25.2"
 qrcode = "^8.0"
 matplotlib = "^3.10.8"
@@ -17,12 +17,12 @@ cryptography = "^46.0.3"
 requests = "^2.31.0"
 python-dotenv = "^1.2.1"
 pydantic = "^2.12.5"
-rich = "^14.2.0"
+rich = "^14.3.1"
 cairosvg = "^2.7.1"
-ruff = "^0.14.11"
+ruff = "^0.14.14"
 pre-commit = "^4.5.1"
 svglib = "^1.6.0"
-reportlab = "^4.4.7"
+reportlab = "^4.4.9"
 term-image = "^0.7.2"
 
 [tool.poetry.scripts]
