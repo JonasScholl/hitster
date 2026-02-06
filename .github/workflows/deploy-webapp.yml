@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "webapp/**"
+      - "app/**"
       - ".github/workflows/deploy-webapp.yml"
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -38,14 +38,12 @@ jobs:
           version: 10
 
       - name: Install dependencies
-        run: |
-          cd webapp
-          pnpm install
+        run: pnpm install
+        working-directory: app
 
-      - name: Build React App
-        run: |
-          cd webapp
-          pnpm build
+      - name: Build Expo Web App
+        run: npx expo export --platform web
+        working-directory: app
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -53,7 +51,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./webapp/dist"
+          path: "./app/dist"
 
   deploy:
     environment:
