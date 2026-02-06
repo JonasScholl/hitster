@@ -52,7 +52,7 @@
   "packageManager": "pnpm@10.28.2",
   "devDependencies": {
     "@babel/core": "7.26.0",
-    "@babel/runtime": "7.26.0",
+    "@babel/runtime": "7.26.10",
     "@types/react": "19.1.10",
     "@typescript-eslint/eslint-plugin": "8.0.0",
     "@typescript-eslint/parser": "8.0.0",
