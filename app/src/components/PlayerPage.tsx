@@ -4,24 +4,34 @@ import { useAppContext } from "../contexts";
 import { AudioPlayer, PlayerHeader } from "./player";
 
 export default function PlayerPage() {
-  const { player, togglePlayPause, seekTo, goToScanner } = useAppContext();
+  const {
+    player,
+    audioData,
+    showSongYear,
+    showSongTitleArtist,
+    togglePlayPause,
+    seekTo,
+    goToScanner,
+  } = useAppContext();
 
   return (
     <SafeAreaView className="flex-1 bg-gray-900" edges={["top", "bottom"]}>
-      <View className="flex-1 max-w-xl mx-auto px-4 w-full gap-6">
+      <View className="flex-1 max-w-xl mx-auto px-4 pt-6 w-full gap-6">
         <PlayerHeader onClose={() => goToScanner(true)} />
 
-        <View className="flex-1 justify-center">
-          <AudioPlayer
-            isPlaying={player.isPlaying}
-            isBuffering={player.isBuffering}
-            isLoaded={player.isLoaded}
-            currentTime={player.currentTime}
-            duration={player.duration}
-            onTogglePlayPause={togglePlayPause}
-            onSeek={seekTo}
-          />
-        </View>
+        <AudioPlayer
+          className="mt-4"
+          isPlaying={player.isPlaying}
+          isBuffering={player.isBuffering}
+          isLoaded={player.isLoaded}
+          currentTime={player.currentTime}
+          duration={player.duration}
+          onTogglePlayPause={togglePlayPause}
+          onSeek={seekTo}
+          title={showSongTitleArtist ? audioData?.title : undefined}
+          artist={showSongTitleArtist ? audioData?.artist : undefined}
+          releaseYear={showSongYear ? audioData?.releaseYear : undefined}
+        />
       </View>
     </SafeAreaView>
   );

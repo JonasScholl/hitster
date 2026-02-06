@@ -7,6 +7,7 @@ import {
   type LayoutChangeEvent,
 } from "react-native";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { calculateProgressPercentage, formatTime } from "../../utils/time";
 
 interface ProgressBarProps {
@@ -22,6 +23,7 @@ export default function ProgressBar({
   onSeek,
   className = "",
 }: ProgressBarProps) {
+  const { t } = useTranslation();
   const [containerWidth, setContainerWidth] = useState(0);
   const progressPercentage = calculateProgressPercentage(currentTime, duration);
 
@@ -31,11 +33,18 @@ export default function ProgressBar({
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
-      if (containerWidth <= 0 || duration <= 0) return;
+      if (
+        containerWidth <= 0 ||
+        duration <= 0 ||
+        !Number.isFinite(duration)
+      ) {
+        return;
+      }
 
       const locationX = event.nativeEvent.locationX;
       const percentage = Math.max(0, Math.min(1, locationX / containerWidth));
       const newTime = percentage * duration;
+      if (!Number.isFinite(newTime)) return;
       onSeek(newTime);
     },
     [containerWidth, duration, onSeek]
@@ -52,7 +61,7 @@ export default function ProgressBar({
         onPress={handlePress}
         onLayout={handleLayout}
         className="w-full h-6 justify-center"
-        accessibilityLabel="Seek audio position"
+        accessibilityLabel={t("player.seekPosition")}
         accessibilityRole="adjustable"
       >
         <View className="w-full bg-gray-700 rounded-full h-2">

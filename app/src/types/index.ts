@@ -1,12 +1,16 @@
 export interface AudioData {
   url: string;
+  title?: string;
+  artist?: string;
+  releaseYear?: number;
 }
 
 export type PageType = "scanner" | "player";
 
 export interface ScannerState {
   isScanning: boolean;
-  message: string;
+  messageKey: string;
+  messageParams?: Record<string, string>;
   showCameraHelp: boolean;
   manualUrl: string;
   hasPermission: boolean | null;

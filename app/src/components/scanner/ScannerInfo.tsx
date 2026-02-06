@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
@@ -6,9 +7,11 @@ interface ScannerInfoProps {
 }
 
 export default function ScannerInfo({ className = "" }: ScannerInfoProps) {
+  useTranslation();
+
   return (
     <View
-      className={`max-w-md bg-gray-800/80 border border-gray-600/30 rounded-lg p-3 mx-4 ${className}`}
+      className={`bg-gray-800/80 border border-gray-600/30 rounded-lg p-3 ${className}`}
     >
       <View className="flex-row items-start gap-2">
         <View className="shrink-0">
@@ -27,9 +30,12 @@ export default function ScannerInfo({ className = "" }: ScannerInfoProps) {
           </Svg>
         </View>
         <Text className="text-xs text-gray-400 flex-1">
-          This scanner is for{" "}
-          <Text className="text-gray-300">Apple Music</Text> QR codes. For
-          Spotify cards, use your regular camera or QR scanner app.
+          <Trans
+            i18nKey="scanner.info"
+            components={{
+              appleMusicText: <Text className="text-gray-300" />,
+            }}
+          />
         </Text>
       </View>
     </View>

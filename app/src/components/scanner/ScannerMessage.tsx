@@ -1,19 +1,26 @@
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
 interface ScannerMessageProps {
-  message: string;
+  messageKey: string;
+  messageParams?: Record<string, string>;
   className?: string;
 }
 
 export default function ScannerMessage({
-  message,
+  messageKey,
+  messageParams,
   className = "",
 }: ScannerMessageProps) {
-  if (!message) return null;
+  const { t } = useTranslation();
+
+  if (!messageKey) return null;
 
   return (
     <View className={`mt-4 px-4 ${className}`}>
-      <Text className="text-center text-gray-300 text-base">{message}</Text>
+      <Text className="text-center text-gray-300 text-base">
+        {t(messageKey, messageParams)}
+      </Text>
     </View>
   );
 }

@@ -1,4 +1,13 @@
-export const getAppleMusicSongUrl = async (url: string): Promise<string> => {
+export interface AppleMusicSongResult {
+  url: string;
+  title?: string;
+  artist?: string;
+  releaseYear?: number;
+}
+
+export const getAppleMusicSongUrl = async (
+  url: string
+): Promise<AppleMusicSongResult> => {
   const path = new URL(url).pathname;
   const songId = path.split("/qr/am/").pop();
 
@@ -13,11 +22,23 @@ export const getAppleMusicSongUrl = async (url: string): Promise<string> => {
     throw new Error("Song not found on Apple Music");
   }
 
-  const previewUrl = data.results[0]?.previewUrl;
+  const track = data.results[0];
+  const previewUrl = track?.previewUrl;
 
   if (!previewUrl) {
     throw new Error("No preview URL available for this song");
   }
 
-  return previewUrl;
+  const releaseDate = track?.releaseDate;
+  const releaseYear =
+    typeof releaseDate === "string"
+      ? new Date(releaseDate).getFullYear()
+      : undefined;
+
+  return {
+    url: previewUrl,
+    title: track?.trackName,
+    artist: track?.artistName,
+    releaseYear: Number.isNaN(releaseYear) ? undefined : releaseYear,
+  };
 };

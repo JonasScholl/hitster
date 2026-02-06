@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   setAudioModeAsync,
   useAudioPlayer,
@@ -12,19 +13,25 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { SCANNER_MESSAGES } from "../constants";
+import { SCANNER_MESSAGE_KEYS } from "../constants";
 import type { AudioData, PageType, PlayerState, ScannerState } from "../types";
 import {
   getAppleMusicSongUrl,
   isAppleMusicShortUrl,
   isValidUrl,
+  normalizeToSeconds,
 } from "../utils";
+
+const SHOW_SONG_YEAR_KEY = "@hitster/showSongYear";
+const SHOW_SONG_TITLE_ARTIST_KEY = "@hitster/showSongTitleArtist";
 
 interface AppContextType {
   currentPage: PageType;
   audioData: AudioData | null;
   scanner: ScannerState;
   player: PlayerState;
+  showSongYear: boolean;
+  showSongTitleArtist: boolean;
 
   startScanner: () => void;
   stopScanner: () => void;
@@ -33,11 +40,13 @@ interface AppContextType {
   handleBarcodeScan: (data: string) => Promise<void>;
   setCameraPermission: (granted: boolean) => void;
   setShowCameraHelp: (show: boolean) => void;
+  setShowSongYear: (value: boolean) => void;
+  setShowSongTitleArtist: (value: boolean) => void;
 
   togglePlayPause: () => void;
   seekTo: (time: number) => void;
 
-  goToPlayer: (url: string) => void;
+  goToPlayer: (url: string, metadata?: Partial<Pick<AudioData, "title" | "artist" | "releaseYear">>) => void;
   goToScanner: (restart?: boolean) => void;
 }
 
@@ -47,10 +56,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [currentPage, setCurrentPage] = useState<PageType>("scanner");
   const [audioData, setAudioData] = useState<AudioData | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [showSongYear, setShowSongYearState] = useState<boolean>(true);
+  const [showSongTitleArtist, setShowSongTitleArtistState] =
+    useState<boolean>(true);
+
+  useEffect(() => {
+    Promise.all([
+      AsyncStorage.getItem(SHOW_SONG_YEAR_KEY),
+      AsyncStorage.getItem(SHOW_SONG_TITLE_ARTIST_KEY),
+    ]).then(([year, titleArtist]) => {
+      if (year !== null) setShowSongYearState(year === "true");
+      if (titleArtist !== null) setShowSongTitleArtistState(titleArtist === "true");
+    });
+  }, []);
+
+  const setShowSongYear = useCallback((value: boolean) => {
+    setShowSongYearState(value);
+    AsyncStorage.setItem(SHOW_SONG_YEAR_KEY, value ? "true" : "false");
+  }, []);
+
+  const setShowSongTitleArtist = useCallback((value: boolean) => {
+    setShowSongTitleArtistState(value);
+    AsyncStorage.setItem(SHOW_SONG_TITLE_ARTIST_KEY, value ? "true" : "false");
+  }, []);
 
   const [scanner, setScanner] = useState<ScannerState>({
     isScanning: false,
-    message: "",
+    messageKey: "",
     showCameraHelp: false,
     manualUrl: "",
     hasPermission: null,
@@ -77,8 +109,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setPlayer({
       isPlaying: audioStatus.playing,
-      currentTime: audioStatus.currentTime,
-      duration: audioStatus.duration,
+      currentTime: normalizeToSeconds(audioStatus.currentTime),
+      duration: normalizeToSeconds(audioStatus.duration),
       isLoaded: audioStatus.isLoaded,
       isBuffering: audioStatus.isBuffering,
     });
@@ -104,7 +136,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setScanner((prev) => ({
       ...prev,
       isScanning: true,
-      message: "",
+      messageKey: "",
+      messageParams: undefined,
       showCameraHelp: false,
     }));
   }, []);
@@ -113,16 +146,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setScanner((prev) => ({
       ...prev,
       isScanning: false,
-      message: "",
+      messageKey: "",
+      messageParams: undefined,
     }));
   }, []);
 
-  const goToPlayer = useCallback((url: string) => {
-    setAudioData({ url });
-    setAudioUrl(url);
-    setCurrentPage("player");
-    setScanner((prev) => ({ ...prev, isScanning: false, message: "" }));
-  }, []);
+  const goToPlayer = useCallback(
+    (
+      url: string,
+      metadata?: Partial<Pick<AudioData, "title" | "artist" | "releaseYear">>
+    ) => {
+      setAudioData({ url, ...metadata });
+      setAudioUrl(url);
+      setCurrentPage("player");
+      setScanner((prev) => ({ ...prev, isScanning: false, messageKey: "", messageParams: undefined }));
+    },
+    []
+  );
 
   const goToScanner = useCallback(
     (restart = false) => {
@@ -141,33 +181,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setScanner((prev) => ({
           ...prev,
           isScanning: true,
-          message: "",
+          messageKey: "",
+          messageParams: undefined,
         }));
       } else {
-        setScanner((prev) => ({ ...prev, message: "" }));
+        setScanner((prev) => ({ ...prev, messageKey: "", messageParams: undefined }));
       }
     },
     []
   );
 
   const loadAudio = useCallback(
-    async (url: string) => {
+    async (
+      url: string,
+      metadata?: Partial<Pick<AudioData, "title" | "artist" | "releaseYear">>
+    ) => {
       try {
         stopScanner();
         setScanner((prev) => ({
           ...prev,
-          message: SCANNER_MESSAGES.VALIDATING,
+          messageKey: SCANNER_MESSAGE_KEYS.VALIDATING,
+          messageParams: undefined,
         }));
 
-        await goToPlayer(url);
+        goToPlayer(url, metadata);
       } catch (err) {
         console.error("Error loading audio:", err);
         setScanner((prev) => ({
           ...prev,
-          message: SCANNER_MESSAGES.ERROR_LOADING,
+          messageKey: SCANNER_MESSAGE_KEYS.ERROR_LOADING,
+          messageParams: undefined,
         }));
         setTimeout(
-          () => setScanner((prev) => ({ ...prev, message: "" })),
+          () => setScanner((prev) => ({ ...prev, messageKey: "", messageParams: undefined })),
           3000
         );
       }
@@ -182,7 +228,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (!isValidUrl(decodedText)) {
         setScanner((prev) => ({
           ...prev,
-          message: `Scanned: ${decodedText}\n${SCANNER_MESSAGES.INVALID_URL}`,
+          messageKey: SCANNER_MESSAGE_KEYS.SCANNED_INVALID_URL,
+          messageParams: { data: decodedText },
         }));
         return;
       }
@@ -190,28 +237,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (isAppleMusicShortUrl(decodedText)) {
         setScanner((prev) => ({
           ...prev,
-          message: SCANNER_MESSAGES.APPLE_MUSIC_SHORT_URL_DETECTED,
+          messageKey: SCANNER_MESSAGE_KEYS.APPLE_MUSIC_SHORT_URL_DETECTED,
+          messageParams: undefined,
         }));
         try {
-          const url = await getAppleMusicSongUrl(decodedText);
-          await loadAudio(url);
+          const result = await getAppleMusicSongUrl(decodedText);
+          await loadAudio(result.url, {
+            title: result.title,
+            artist: result.artist,
+            releaseYear: result.releaseYear,
+          });
         } catch (error) {
           console.error("Error fetching Apple Music song:", error);
           setScanner((prev) => ({
             ...prev,
-            message: SCANNER_MESSAGES.ERROR_LOADING,
+            messageKey: SCANNER_MESSAGE_KEYS.ERROR_LOADING,
+            messageParams: undefined,
           }));
         }
       } else if (decodedText.includes("http")) {
         setScanner((prev) => ({
           ...prev,
-          message: SCANNER_MESSAGES.URL_DETECTED,
+          messageKey: SCANNER_MESSAGE_KEYS.URL_DETECTED,
+          messageParams: undefined,
         }));
-        await loadAudio(decodedText);
+        await loadAudio(decodedText, undefined);
       } else {
         setScanner((prev) => ({
           ...prev,
-          message: `Scanned: ${decodedText}\n${SCANNER_MESSAGES.INVALID_AUDIO_URL}`,
+          messageKey: SCANNER_MESSAGE_KEYS.SCANNED_INVALID_AUDIO_URL,
+          messageParams: { data: decodedText },
         }));
       }
     },
@@ -226,41 +281,48 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const url = scanner.manualUrl.trim();
 
     if (!url) {
-      setScanner((prev) => ({ ...prev, message: SCANNER_MESSAGES.ENTER_URL }));
+      setScanner((prev) => ({ ...prev, messageKey: SCANNER_MESSAGE_KEYS.ENTER_URL, messageParams: undefined }));
       return;
     }
 
     if (!isValidUrl(url)) {
       setScanner((prev) => ({
         ...prev,
-        message: SCANNER_MESSAGES.INVALID_URL_FORMAT,
+        messageKey: SCANNER_MESSAGE_KEYS.INVALID_URL_FORMAT,
+        messageParams: undefined,
       }));
       return;
     }
 
     if (!url.startsWith("https:")) {
-      setScanner((prev) => ({ ...prev, message: SCANNER_MESSAGES.HTTPS_ONLY }));
+      setScanner((prev) => ({ ...prev, messageKey: SCANNER_MESSAGE_KEYS.HTTPS_ONLY, messageParams: undefined }));
       return;
     }
 
     if (!isAppleMusicShortUrl(url)) {
       setScanner((prev) => ({
         ...prev,
-        message: SCANNER_MESSAGES.APPLE_MUSIC_ONLY,
+        messageKey: SCANNER_MESSAGE_KEYS.APPLE_MUSIC_ONLY,
+        messageParams: undefined,
       }));
       return;
     }
 
-    setScanner((prev) => ({ ...prev, message: "Loading audio from URL..." }));
+    setScanner((prev) => ({ ...prev, messageKey: SCANNER_MESSAGE_KEYS.LOADING_FROM_URL, messageParams: undefined }));
 
     try {
-      const audioUrl = await getAppleMusicSongUrl(url);
-      await loadAudio(audioUrl);
+      const result = await getAppleMusicSongUrl(url);
+      await loadAudio(result.url, {
+        title: result.title,
+        artist: result.artist,
+        releaseYear: result.releaseYear,
+      });
     } catch (error) {
       console.error("Error loading manual URL:", error);
       setScanner((prev) => ({
         ...prev,
-        message: SCANNER_MESSAGES.ERROR_LOADING,
+        messageKey: SCANNER_MESSAGE_KEYS.ERROR_LOADING,
+        messageParams: undefined,
       }));
     }
   }, [scanner.manualUrl, loadAudio]);
@@ -275,6 +337,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const seekTo = useCallback(
     (time: number) => {
+      if (!Number.isFinite(time) || time < 0) return;
       audioPlayer.seekTo(time);
     },
     [audioPlayer]
@@ -286,6 +349,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       audioData,
       scanner,
       player,
+      showSongYear,
+      showSongTitleArtist,
       startScanner,
       stopScanner,
       setManualUrl,
@@ -293,6 +358,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       handleBarcodeScan,
       setCameraPermission,
       setShowCameraHelp,
+      setShowSongYear,
+      setShowSongTitleArtist,
       togglePlayPause,
       seekTo,
       goToPlayer,
@@ -303,6 +370,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       audioData,
       scanner,
       player,
+      showSongYear,
+      showSongTitleArtist,
       startScanner,
       stopScanner,
       setManualUrl,
@@ -310,6 +379,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       handleBarcodeScan,
       setCameraPermission,
       setShowCameraHelp,
+      setShowSongYear,
+      setShowSongTitleArtist,
       togglePlayPause,
       seekTo,
       goToPlayer,

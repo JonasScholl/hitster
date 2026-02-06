@@ -1,5 +1,6 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Platform, StyleSheet, View } from "react-native";
 import { useAppContext } from "../../contexts";
 import { CloseIconButton } from "../ui";
@@ -9,6 +10,7 @@ interface QRCodeScannerProps {
 }
 
 export default function QRCodeScanner({ className = "" }: QRCodeScannerProps) {
+  const { t } = useTranslation();
   const {
     scanner,
     stopScanner,
@@ -83,7 +85,7 @@ export default function QRCodeScanner({ className = "" }: QRCodeScannerProps) {
         className="absolute top-4 right-4"
         style={Platform.OS === "ios" ? { top: 60 } : undefined}
       >
-        <CloseIconButton onPress={stopScanner} accessibilityLabel="Close scanner" />
+        <CloseIconButton onPress={stopScanner} accessibilityLabel={t("camera.closeScanner")} />
       </View>
     </View>
   );

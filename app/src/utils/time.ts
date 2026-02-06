@@ -1,3 +1,9 @@
+export const normalizeToSeconds = (value: number | undefined | null): number => {
+  if (value == null || !Number.isFinite(value)) return 0;
+  if (value > 600) return value / 1000;
+  return value;
+};
+
 export const formatTime = (seconds: number): string => {
   if (isNaN(seconds) || seconds < 0) return "0:00";
 

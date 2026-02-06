@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Platform, ScrollView, Text, View } from "react-native";
 import { Button, Input } from "../ui";
 
@@ -14,6 +15,7 @@ export default function CameraHelpModal({
   onLoadManualUrl,
   className = "",
 }: CameraHelpModalProps) {
+  const { t } = useTranslation();
   const isWeb = Platform.OS === "web";
   const isIOS = Platform.OS === "ios";
   const isAndroid = Platform.OS === "android";
@@ -24,29 +26,28 @@ export default function CameraHelpModal({
       showsVerticalScrollIndicator={false}
     >
       <Text className="text-lg font-semibold mb-4 text-yellow-400">
-        Camera Access Required
+        {t("camera.accessRequired")}
       </Text>
 
       <View className="gap-3">
         <Text className="text-sm text-gray-300">
-          To scan QR codes, this app needs access to your camera. Here's how to
-          enable it:
+          {t("camera.enableInstructions")}
         </Text>
 
         {isWeb && (
           <View className="bg-gray-700 rounded p-3">
             <Text className="font-semibold text-white mb-2">
-              For Chrome/Edge:
+              {t("camera.chromeEdge")}
             </Text>
             <View className="gap-1">
               <Text className="text-xs text-gray-300">
-                • Click the camera icon in the address bar
+                • {t("camera.chromeStep1")}
               </Text>
               <Text className="text-xs text-gray-300">
-                • Select "Allow" for camera access
+                • {t("camera.chromeStep2")}
               </Text>
               <Text className="text-xs text-gray-300">
-                • Refresh the page and try again
+                • {t("camera.chromeStep3")}
               </Text>
             </View>
           </View>
@@ -55,31 +56,31 @@ export default function CameraHelpModal({
         {(isWeb || isIOS) && (
           <View className="bg-gray-700 rounded p-3">
             <Text className="font-semibold text-white mb-2">
-              {isWeb ? "For Safari:" : "For iOS:"}
+              {isWeb ? t("camera.safari") : t("camera.iOS")}
             </Text>
             <View className="gap-1">
               {isWeb ? (
                 <>
                   <Text className="text-xs text-gray-300">
-                    • Go to Safari → Settings → Websites → Camera
+                    • {t("camera.safariStep1")}
                   </Text>
                   <Text className="text-xs text-gray-300">
-                    • Set this website to "Allow"
+                    • {t("camera.safariStep2")}
                   </Text>
                   <Text className="text-xs text-gray-300">
-                    • Refresh the page and try again
+                    • {t("camera.safariStep3")}
                   </Text>
                 </>
               ) : (
                 <>
                   <Text className="text-xs text-gray-300">
-                    • Open Settings app
+                    • {t("camera.iOSStep1")}
                   </Text>
                   <Text className="text-xs text-gray-300">
-                    • Scroll down to find this app
+                    • {t("camera.iOSStep2")}
                   </Text>
                   <Text className="text-xs text-gray-300">
-                    • Enable Camera access
+                    • {t("camera.iOSStep3")}
                   </Text>
                 </>
               )}
@@ -89,39 +90,43 @@ export default function CameraHelpModal({
 
         {isAndroid && (
           <View className="bg-gray-700 rounded p-3">
-            <Text className="font-semibold text-white mb-2">For Android:</Text>
+            <Text className="font-semibold text-white mb-2">
+              {t("camera.android")}
+            </Text>
             <View className="gap-1">
               <Text className="text-xs text-gray-300">
-                • Open Settings → Apps
+                • {t("camera.androidStep1")}
               </Text>
               <Text className="text-xs text-gray-300">
-                • Find and select this app
+                • {t("camera.androidStep2")}
               </Text>
               <Text className="text-xs text-gray-300">
-                • Tap Permissions → Camera → Allow
+                • {t("camera.androidStep3")}
               </Text>
             </View>
           </View>
         )}
 
         <View className="bg-gray-700 rounded p-3">
-          <Text className="font-semibold text-white mb-2">Alternative:</Text>
+          <Text className="font-semibold text-white mb-2">
+            {t("camera.alternative")}
+          </Text>
           <Text className="text-xs text-gray-300 mb-3">
-            You can also manually enter the card audio URL below:
+            {t("camera.manualEntryHint")}
           </Text>
           <View className="gap-2">
             <Input
               value={manualUrl}
               onChangeText={onManualUrlChange}
               onSubmitEditing={onLoadManualUrl}
-              placeholder="Paste card audio URL here..."
+              placeholder={t("camera.manualUrlPlaceholder")}
               keyboardType="url"
               returnKeyType="go"
               autoCapitalize="none"
               autoCorrect={false}
             />
             <Button onPress={onLoadManualUrl} size="sm">
-              Load Audio
+              {t("camera.loadAudio")}
             </Button>
           </View>
         </View>

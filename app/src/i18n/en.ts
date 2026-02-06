@@ -1,0 +1,68 @@
+const en = {
+  scanner: {
+    title: "Hitster",
+    subtitle: "QR Scanner",
+    tagline: "Scan a QR code to play music",
+    start: "Start",
+    showYear: "Show year",
+    showTitleArtist: "Show title & artist",
+    info: "This scanner is for <appleMusicText>Apple Music</appleMusicText> QR codes. For Spotify cards, use your regular camera or QR scanner app.",
+  },
+  player: {
+    nowPlaying: "Now Playing",
+    closePlayer: "Close player",
+    seekPosition: "Seek audio position",
+  },
+  camera: {
+    accessRequired: "Camera Access Required",
+    enableInstructions:
+      "To scan QR codes, this app needs access to your camera. Here's how to enable it:",
+    chromeEdge: "For Chrome/Edge:",
+    chromeStep1: "Click the camera icon in the address bar",
+    chromeStep2: 'Select "Allow" for camera access',
+    chromeStep3: "Refresh the page and try again",
+    safari: "For Safari:",
+    iOS: "For iOS:",
+    safariStep1: "Go to Safari → Settings → Websites → Camera",
+    safariStep2: 'Set this website to "Allow"',
+    safariStep3: "Refresh the page and try again",
+    iOSStep1: "Open Settings app",
+    iOSStep2: "Scroll down to find this app",
+    iOSStep3: "Enable Camera access",
+    android: "For Android:",
+    androidStep1: "Open Settings → Apps",
+    androidStep2: "Find and select this app",
+    androidStep3: "Tap Permissions → Camera → Allow",
+    alternative: "Alternative:",
+    manualEntryHint: "You can also manually enter the card audio URL below:",
+    manualUrlPlaceholder: "Paste card audio URL here...",
+    loadAudio: "Load Audio",
+    closeScanner: "Close scanner",
+  },
+  messages: {
+    cameraNotSupported: "Camera not supported on this device/browser",
+    cameraPermissionDenied:
+      "Camera permission denied. Please enable camera access in your device settings.",
+    invalidUrl: "This doesn't appear to be a valid URL.",
+    invalidAudioUrl: "This doesn't appear to be an audio URL.",
+    appleMusicDetected: "Apple Music short URL detected! Validating...",
+    urlDetected: "URL detected. Checking if it's an audio file...",
+    validating: "Validating audio URL...",
+    invalidAudio:
+      "Invalid or inaccessible audio URL. Please try a different QR code.",
+    errorLoading: "Error loading audio file. Please try again.",
+    enterUrl: "Please enter a URL",
+    invalidUrlFormat: "Please enter a valid URL",
+    httpsOnly: "Only HTTPS URLs are permitted.",
+    appleMusicOnly: "Only Apple Music audio preview URLs are permitted.",
+    loadingFromUrl: "Loading audio from URL...",
+    scannedInvalidUrl: "Scanned: {{data}}\nThis doesn't appear to be a valid URL.",
+    scannedInvalidAudioUrl: "Scanned: {{data}}\nThis doesn't appear to be an audio URL.",
+  },
+  notFound: {
+    title: "Not Found",
+    message: "Page not found",
+  },
+} as const;
+
+export default en;
