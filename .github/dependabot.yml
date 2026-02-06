@@ -14,14 +14,14 @@ updates:
           - "*"
 
   # Node.js
-  - package-ecosystem: "npm"
-    directory: "/app"
-    target-branch: main
-    schedule:
-      interval: "weekly"
-    assignees:
-      - "jonasscholl"
-    groups:
-      app:
-        patterns:
-          - "*"
+  # - package-ecosystem: "npm"
+  #   directory: "/app"
+  #   target-branch: main
+  #   schedule:
+  #     interval: "weekly"
+  #   assignees:
+  #     - "jonasscholl"
+  #   groups:
+  #     app:
+  #       patterns:
+  #         - "*"

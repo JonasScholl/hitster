@@ -62,7 +62,7 @@ export default function AudioPlayer({
                 {releaseYear}
               </Text>
             ) : null}
-            <View className="flex-1 justify-center min-w-0 w-full md:w-auto">
+            <View className="justify-center min-w-0 w-full md:flex-1 md:w-auto">
               {title ? (
                 <Text
                   className="text-2xl font-bold text-white tracking-tight"
