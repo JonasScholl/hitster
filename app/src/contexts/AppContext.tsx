@@ -37,6 +37,7 @@ interface AppContextType {
   stopScanner: () => void;
   setManualUrl: (url: string) => void;
   loadManualUrl: () => Promise<void>;
+  loadFromUrl: (url: string) => Promise<void>;
   handleBarcodeScan: (data: string) => Promise<void>;
   setCameraPermission: (granted: boolean) => void;
   setShowCameraHelp: (show: boolean) => void;
@@ -277,6 +278,31 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setScanner((prev) => ({ ...prev, manualUrl: url }));
   }, []);
 
+  const loadFromUrl = useCallback(
+    async (url: string) => {
+      if (!isValidUrl(url) || !isAppleMusicShortUrl(url)) {
+        return;
+      }
+      setScanner((prev) => ({ ...prev, messageKey: SCANNER_MESSAGE_KEYS.LOADING_FROM_URL, messageParams: undefined }));
+      try {
+        const result = await getAppleMusicSongUrl(url);
+        await loadAudio(result.url, {
+          title: result.title,
+          artist: result.artist,
+          releaseYear: result.releaseYear,
+        });
+      } catch (error) {
+        console.error("Error loading URL:", error);
+        setScanner((prev) => ({
+          ...prev,
+          messageKey: SCANNER_MESSAGE_KEYS.ERROR_LOADING,
+          messageParams: undefined,
+        }));
+      }
+    },
+    [loadAudio]
+  );
+
   const loadManualUrl = useCallback(async () => {
     const url = scanner.manualUrl.trim();
 
@@ -355,6 +381,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       stopScanner,
       setManualUrl,
       loadManualUrl,
+      loadFromUrl,
       handleBarcodeScan,
       setCameraPermission,
       setShowCameraHelp,
@@ -376,6 +403,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       stopScanner,
       setManualUrl,
       loadManualUrl,
+      loadFromUrl,
       handleBarcodeScan,
       setCameraPermission,
       setShowCameraHelp,

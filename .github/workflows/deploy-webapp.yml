@@ -48,6 +48,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Add 404.html for client-side routing
+        run: cp ./app/dist/index.html ./app/dist/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
