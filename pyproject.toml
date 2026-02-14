@@ -8,28 +8,28 @@ packages = [{include = "generator"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-typst = "^0.14.7"
+typst = "^0.14.8"
 spotipy = "^2.25.2"
 qrcode = "^8.0"
 matplotlib = "^3.10.8"
 pyjwt = "^2.11.0"
-cryptography = "^46.0.4"
+cryptography = "^46.0.5"
 requests = "^2.31.0"
 python-dotenv = "^1.2.1"
 pydantic = "^2.12.5"
 rich = "^14.3.2"
 cairosvg = "^2.7.1"
-ruff = "^0.15.0"
+ruff = "^0.15.1"
 pre-commit = "^4.5.1"
 svglib = "^1.6.0"
-reportlab = "^4.4.9"
+reportlab = "^4.4.10"
 term-image = "^0.7.2"
 
 [tool.poetry.scripts]
 generate-hitster-cards = "generator.main:main"
 
 [tool.poetry.group.dev.dependencies]
-pymupdf = "^1.26.7"
+pymupdf = "^1.27.1"
 
 [tool.ruff]
 line-length = 120
