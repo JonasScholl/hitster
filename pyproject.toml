@@ -12,14 +12,14 @@ typst = "^0.14.8"
 spotipy = "^2.26.0"
 qrcode = "^8.0"
 matplotlib = "^3.10.8"
-pyjwt = "^2.11.0"
+pyjwt = "^2.12.1"
 cryptography = "^46.0.5"
 requests = "^2.31.0"
 python-dotenv = "^1.2.2"
 pydantic = "^2.12.5"
 rich = "^14.3.3"
-cairosvg = "^2.7.1"
-ruff = "^0.15.5"
+cairosvg = "^2.9.0"
+ruff = "^0.15.6"
 pre-commit = "^4.5.1"
 svglib = "^1.6.0"
 reportlab = "^4.4.10"
@@ -29,7 +29,7 @@ term-image = "^0.7.2"
 generate-hitster-cards = "generator.main:main"
 
 [tool.poetry.group.dev.dependencies]
-pymupdf = "^1.27.1"
+pymupdf = "^1.27.2"
 
 [tool.ruff]
 line-length = 120
