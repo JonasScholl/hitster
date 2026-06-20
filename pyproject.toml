@@ -19,17 +19,14 @@ python-dotenv = "^1.2.2"
 pydantic = "^2.12.5"
 rich = ">=14.3.4,<16.0.0"
 cairosvg = "^2.9.0"
-ruff = "^0.15.10"
-pre-commit = "^4.5.1"
-svglib = ">=1.6,<3.0"
-reportlab = ">=4.4.10,<6.0.0"
 term-image = "^0.7.2"
 
 [tool.poetry.scripts]
 generate-hitster-cards = "generator.main:main"
 
 [tool.poetry.group.dev.dependencies]
-pymupdf = "^1.27.2"
+ruff = "^0.15.10"
+pre-commit = "^4.5.1"
 
 [tool.ruff]
 line-length = 120
