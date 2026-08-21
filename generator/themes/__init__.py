@@ -7,6 +7,7 @@ class Theme(StrEnum):
     COLORED = "colored"
     HALLOWEEN = "halloween"
     SUMMER_BREEZE = "summer-breeze"
+    WEDDING = "wedding"
 
 
 def get_card_colors(theme: Theme) -> list[tuple[int, int, int]]:
@@ -36,6 +37,14 @@ def get_card_colors(theme: Theme) -> list[tuple[int, int, int]]:
                 (250, 250, 250),  # #FAFAFA
                 (104, 58, 6),  # #683A06
             ]
+        case Theme.WEDDING:
+            return [
+                (128, 115, 98),  # #807362
+                (212, 139, 83),  # #D48B53
+                (255, 181, 86),  # #FFB556
+                (227, 192, 173),  # #E3C0AD
+                (224, 224, 227),  # #E0E0E3
+            ]
         case _:
             return [(255, 255, 255)]
 
@@ -52,6 +61,8 @@ def get_qr_background_color(theme: Theme) -> tuple[int, int, int]:
     match theme:
         case Theme.BLACK_WHITE:
             return (255, 255, 255)
+        case Theme.WEDDING:
+            return (250, 246, 240)  # #FAF6F0 - ivory
         case _:
             return (1, 0, 0)
 
@@ -60,8 +71,19 @@ def get_qr_fill_color(theme: Theme) -> tuple[int, int, int]:
     match theme:
         case Theme.BLACK_WHITE:
             return (0, 0, 0)
+        case Theme.WEDDING:
+            return (58, 51, 62)  # #3A333E - deep ink
         case _:
             return (255, 255, 255)
+
+
+def get_qr_embedded_image_ratio(theme: Theme) -> float:
+    """Fraction of the QR size used by the center image. Photos need more headroom than logos."""
+    match theme:
+        case Theme.WEDDING:
+            return 0.32
+        case _:
+            return 0.5
 
 
 def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
@@ -81,8 +103,12 @@ def get_image_paths(theme: Theme, purpose: str = "qr") -> list[Path]:
         )
 
     if theme == Theme.SUMMER_BREEZE:
+        return sorted(images_dir.glob("summer-breeze-logo.svg")) if purpose == "qr" else []
+
+    if theme == Theme.WEDDING:
         if purpose == "qr":
-            return sorted(images_dir.glob("summer-breeze-logo.svg"))
-        return []
+            photo = images_dir / "wedding-qr-center.png"
+            return [photo] if photo.exists() else sorted(images_dir.glob("wedding_01.svg"))
+        return sorted(images_dir.glob("wedding_*.svg"))
 
     return []

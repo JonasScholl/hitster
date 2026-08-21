@@ -40,16 +40,14 @@ class Connector(ABC):
         suffixes_to_remove = [
             r"\(.*?remaster.*?\)",
             r"\[.*?remaster.*?\]",
-            r"\(radio edit\)",
-            r"\[radio edit\]",
-            r"\(single version\)",
-            r"\[single version\]",
-            r"\(album version\)",
-            r"\[album version\]",
-            r"\(extended version\)",
-            r"\[extended version\]",
-            r"\(clean version\)",
-            r"\[clean version\]",
+            r"\(.*?version.*?\)",
+            r"\[.*?version.*?\]",
+            r"\(.*?edit.*?\)",
+            r"\[.*?edit.*?\]",
+            r"\(.*?mix(?:ed)?.*?\)",
+            r"\[.*?mix(?:ed)?.*?\]",
+            r"\(re-?recorded.*?\)",
+            r"\[re-?recorded.*?\]",
             r"\(explicit\)",
             r"\[explicit\]",
             r"\(feat\. .*?\)",
@@ -60,8 +58,6 @@ class Connector(ABC):
             r"\[ft\. .*?\]",
             r"\(with .*?\)",
             r"\[with .*?\]",
-            r"\(full version\)",
-            r"\[full version\]",
         ]
 
         sanitized = title.strip()

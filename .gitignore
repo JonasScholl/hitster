@@ -12,6 +12,7 @@
 # Specific files
 .DS_Store
 overrides.json
+generator/themes/images/wedding-qr-center.png
 
 # Specific directories
 generated

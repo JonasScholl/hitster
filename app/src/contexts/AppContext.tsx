@@ -10,6 +10,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -99,6 +100,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const audioPlayer = useAudioPlayer(audioUrl);
   const audioStatus = useAudioPlayerStatus(audioPlayer);
+  const audioPlayerRef = useRef(audioPlayer);
+
+  useEffect(() => {
+    audioPlayerRef.current = audioPlayer;
+  }, [audioPlayer]);
+
+  const stopPlayback = useCallback(() => {
+    try {
+      audioPlayerRef.current?.pause();
+    } catch {
+      // player was already released
+    }
+  }, []);
 
   useEffect(() => {
     setAudioModeAsync({
@@ -107,16 +121,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  useEffect(() => () => stopPlayback(), [stopPlayback]);
+
   useEffect(() => {
+    const didFinish = audioStatus.didJustFinish;
     setPlayer({
-      isPlaying: audioStatus.playing,
+      isPlaying: !didFinish && (audioStatus.playing || audioPlayer.playing),
       currentTime: normalizeToSeconds(audioStatus.currentTime),
       duration: normalizeToSeconds(audioStatus.duration),
       isLoaded: audioStatus.isLoaded,
       isBuffering: audioStatus.isBuffering,
     });
 
-    if (audioStatus.didJustFinish) {
+    if (didFinish) {
       audioPlayer.seekTo(0);
     }
   }, [audioStatus, audioPlayer]);
@@ -157,16 +174,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
       url: string,
       metadata?: Partial<Pick<AudioData, "title" | "artist" | "releaseYear">>
     ) => {
+      stopPlayback();
       setAudioData({ url, ...metadata });
       setAudioUrl(url);
       setCurrentPage("player");
       setScanner((prev) => ({ ...prev, isScanning: false, messageKey: "", messageParams: undefined }));
     },
-    []
+    [stopPlayback]
   );
 
   const goToScanner = useCallback(
     (restart = false) => {
+      stopPlayback();
       setAudioUrl(null);
       setAudioData(null);
       setPlayer({
@@ -189,7 +208,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setScanner((prev) => ({ ...prev, messageKey: "", messageParams: undefined }));
       }
     },
-    []
+    [stopPlayback]
   );
 
   const loadAudio = useCallback(
@@ -354,12 +373,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [scanner.manualUrl, loadAudio]);
 
   const togglePlayPause = useCallback(() => {
-    if (player.isPlaying) {
+    if (audioPlayer.playing) {
       audioPlayer.pause();
     } else {
       audioPlayer.play();
     }
-  }, [player.isPlaying, audioPlayer]);
+  }, [audioPlayer]);
 
   const seekTo = useCallback(
     (time: number) => {

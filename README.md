@@ -133,7 +133,7 @@ An overview diagram of the release year distribution is automatically created as
 |----------|----------|-------------|
 | `PROVIDER` | ✅ | Music service: `spotify` or `apple-music` |
 | `PLAYLIST_ID` | ✅ | Playlist identifier from your music service |
-| `THEME` | Optional | Card theme: `black-white`, `colored`, or `halloween` (default: `black-white`) |
+| `THEME` | Optional | Card theme: `black-white`, `colored`, `halloween`, `summer-breeze`, or `wedding` (default: `black-white`) |
 | `SPOTIFY_CLIENT_ID` | Spotify | Spotify app client ID |
 | `SPOTIFY_CLIENT_SECRET` | Spotify | Spotify app client secret |
 | `SPOTIFY_USE_PREVIEW_URL` | Spotify, Optional | Use preview URLs instead of full tracks |
@@ -192,10 +192,24 @@ Set the `THEME` environment variable to choose your card design:
 | `black-white` | Clean black and white design (default) |
 | `colored` | Vibrant colors with 5-color palette |
 | `halloween` | Halloween theme with spooky graphics |
+| `summer-breeze` | Warm terracotta, cream, and brown cards |
+| `wedding` | Wedding theme with couple photo QR centers and icon decorations |
 
 ```bash
 THEME="colored"  # Example usage
 ```
+
+### Wedding couple photo
+
+The wedding theme embeds a circular photo in the center of each QR code. Place your photo at this exact path:
+
+```
+generator/themes/images/wedding-qr-center.png
+```
+
+The filename must be `wedding-qr-center.png` — any other name is ignored. The image is cropped to a circle automatically. If the file is missing, the theme falls back to the default wedding icon.
+
+This path is gitignored so a personal photo stays local and is not committed.
 
 ## 🤝 Contributing
 

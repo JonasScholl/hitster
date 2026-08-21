@@ -12,7 +12,14 @@ from qrcode.image.styles.moduledrawers.pil import CircleModuleDrawer
 from generator.connectors import Song
 from generator.logger import item, progress_bar
 from generator.render.images import process_embedded_image
-from generator.themes import Theme, get_image_paths, get_qr_background_color, get_qr_fill_color, get_qr_image_color
+from generator.themes import (
+    Theme,
+    get_image_paths,
+    get_qr_background_color,
+    get_qr_embedded_image_ratio,
+    get_qr_fill_color,
+    get_qr_image_color,
+)
 from generator.utils import get_max_workers
 
 
@@ -55,7 +62,7 @@ def _generate_qr_code(
 
     qr_image = qr.make_image(
         embeded_image_path=str(image_path.absolute()) if image_path else None,
-        embeded_image_ratio=0.5,
+        embeded_image_ratio=get_qr_embedded_image_ratio(theme),
         module_drawer=CircleModuleDrawer(),
         color_mask=SolidFillColorMask(
             back_color=get_qr_background_color(theme),
