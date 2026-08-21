@@ -108,7 +108,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const stopPlayback = useCallback(() => {
     try {
-      audioPlayerRef.current?.pause();
+      const player = audioPlayerRef.current;
+      if (!player) return;
+      player.pause();
+      player.seekTo(0);
     } catch {
       // player was already released
     }
@@ -124,9 +127,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => () => stopPlayback(), [stopPlayback]);
 
   useEffect(() => {
+    if (!audioUrl) return;
+    if (audioStatus.id !== audioPlayer.id) return;
+
     const didFinish = audioStatus.didJustFinish;
     setPlayer({
-      isPlaying: !didFinish && (audioStatus.playing || audioPlayer.playing),
+      isPlaying: !didFinish && audioPlayer.playing,
       currentTime: normalizeToSeconds(audioStatus.currentTime),
       duration: normalizeToSeconds(audioStatus.duration),
       isLoaded: audioStatus.isLoaded,
@@ -136,7 +142,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (didFinish) {
       audioPlayer.seekTo(0);
     }
-  }, [audioStatus, audioPlayer]);
+  }, [audioUrl, audioStatus, audioPlayer]);
 
   const setCameraPermission = useCallback((granted: boolean) => {
     setScanner((prev) => ({
@@ -175,6 +181,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       metadata?: Partial<Pick<AudioData, "title" | "artist" | "releaseYear">>
     ) => {
       stopPlayback();
+      setPlayer({
+        isPlaying: false,
+        currentTime: 0,
+        duration: 0,
+        isLoaded: false,
+        isBuffering: false,
+      });
       setAudioData({ url, ...metadata });
       setAudioUrl(url);
       setCurrentPage("player");
